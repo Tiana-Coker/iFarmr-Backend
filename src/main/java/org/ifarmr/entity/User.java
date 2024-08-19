@@ -78,6 +78,9 @@ public class User {
     @JsonManagedReference
     private List<Task> tasks;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Crop> crops;
 
     @PrePersist
     @PreUpdate
