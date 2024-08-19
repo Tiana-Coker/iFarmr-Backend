@@ -1,0 +1,7 @@
+package org.ifarmr.repository;
+
+import org.ifarmr.entity.Inventory;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface InventoryRepository extends JpaRepository<Inventory, Long> {
+}
