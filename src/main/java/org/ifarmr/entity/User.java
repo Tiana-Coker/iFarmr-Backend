@@ -3,6 +3,7 @@ package org.ifarmr.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.ifarmr.enums.Gender;
 //import org.ifarmr.enums.Role;
 import org.springframework.data.annotation.CreatedDate;
@@ -44,7 +45,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @CreatedDate
+    @CreationTimestamp
     private LocalDateTime dateJoined;
 
 //    @Enumerated(EnumType.STRING)
@@ -63,24 +64,24 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Ticket> tickets;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<LiveStock> liveStocks;
 
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Post> posts;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Comment> comments;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Inventory> inventories;
 
@@ -88,22 +89,14 @@ public class User implements UserDetails {
     @JsonManagedReference
     private List<Notification> notifications;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Task> tasks;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Crop> crops;
 
-    @PrePersist
-    @PreUpdate
-    //This allows us to persist and allow the created date to hit the database
-    public void prePersist(){
-        if (dateJoined == null){
-            dateJoined= LocalDateTime.now();
-        }
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
