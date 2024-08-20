@@ -14,6 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "livestock_tbl")
 public class LiveStock extends BaseClass {
 
     private String name;
