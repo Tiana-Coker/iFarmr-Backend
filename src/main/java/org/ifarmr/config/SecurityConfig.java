@@ -33,7 +33,11 @@ public class SecurityConfig {
         security.csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(
                         requests -> requests
-                                .requestMatchers(antMatcher(HttpMethod.POST, "/api/v1/auth/**")).permitAll())
+                                .requestMatchers(antMatcher(HttpMethod.POST, "/api/v1/auth/**"),
+                                        antMatcher(HttpMethod.GET, "/api/v1/auth/**"))
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .sessionManagement(session -> session
