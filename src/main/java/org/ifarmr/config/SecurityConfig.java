@@ -25,6 +25,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
         security.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -32,12 +33,11 @@ public class SecurityConfig {
         security.csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(
                         requests -> requests
-                                .requestMatchers(antMatcher(HttpMethod.GET, "/swagger-ui.html")).permitAll()
-                                .requestMatchers(antMatcher(HttpMethod.GET, "/swagger-ui/**")).permitAll()
-                                .requestMatchers(antMatcher(HttpMethod.GET, "/v3/api-docs/**")).permitAll()
-                                .requestMatchers(antMatcher(HttpMethod.GET, "/swagger-resources/**")).permitAll()
-                                .requestMatchers(antMatcher(HttpMethod.POST, "/api/v1/auth/**")).permitAll()
-                                .anyRequest().authenticated())
+                                .requestMatchers(antMatcher(HttpMethod.POST, "/api/v1/auth/**"),
+                                        antMatcher(HttpMethod.GET, "/api/v1/auth/**"))
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .sessionManagement(session -> session
@@ -49,4 +49,6 @@ public class SecurityConfig {
 
         return security.build();
     }
+
+
 }
