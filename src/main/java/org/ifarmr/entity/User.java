@@ -63,6 +63,7 @@ public class User implements UserDetails {
     )
     private Set<Role> roles;
 
+    private boolean enabled = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
