@@ -34,7 +34,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         requests -> requests
                                 .requestMatchers(antMatcher(HttpMethod.POST, "/api/v1/auth/**"),
-                                        antMatcher(HttpMethod.GET, "/api/v1/auth/**"))
+                                        antMatcher(HttpMethod.GET, "/api/v1/auth/**"),
+                                        antMatcher(HttpMethod.GET, "/swagger-ui.html"),
+                                        antMatcher(HttpMethod.GET, "/v3/api-docs/**"),
+                                        antMatcher(HttpMethod.GET, "/swagger-resources/**"),
+                                        antMatcher(HttpMethod.GET, "/swagger-ui/**"))
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
