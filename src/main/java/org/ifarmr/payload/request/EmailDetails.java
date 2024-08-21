@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class EmailDetails {
-    private String firstName;
+    private String fullName;
 
-    private String lastName;
 
     private String recipient;
 

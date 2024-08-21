@@ -1,7 +1,5 @@
 package org.ifarmr.service.impl;
 
-import com.mailgun.api.v3.MailgunMessagesApi;
-import com.mailgun.model.message.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +34,7 @@ public class EmailServiceImpl implements EmailService {
 
         Context context = new Context();
         Map<String, Object> variables = Map.of(
-                "name", emailDetails.getFirstName() + " " + emailDetails.getLastName(),
+                "name", emailDetails.getFullName(),
                 "link", emailDetails.getLink()
 
         );
@@ -56,7 +54,20 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendEmail(String to, String subject, String body) {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message, StandardCharsets.UTF_8.name());
 
+        try {
+            messageHelper.setFrom(senderEmail);
+            messageHelper.setTo(to);
+            messageHelper.setSubject(subject);
+            messageHelper.setText(body, false); // false indicates plain text email
+            javaMailSender.send(message);
+            log.info("Sent plain text email to {}", to);
+        } catch (MessagingException e) {
+            log.error("Failed to send plain text email", e);
+            throw new RuntimeException("Failed to send plain text email", e);
+        }
     }
 
 }
