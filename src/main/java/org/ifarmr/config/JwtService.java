@@ -22,7 +22,7 @@ public class JwtService {
 
     private static String SECRET_KEY;
 
-    @Value("${JWT_SECRET}")
+    @Value("${ifarmer.jwt.secret}")
     public void setSecretKey(String secretKey) {
         SECRET_KEY = secretKey;
     }

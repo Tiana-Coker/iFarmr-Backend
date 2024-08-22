@@ -3,6 +3,7 @@ package org.ifarmr.service.impl;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ifarmr.config.JwtService;
 import org.ifarmr.entity.ConfirmationTokenModel;
 import org.ifarmr.entity.JToken;
 import org.ifarmr.entity.Role;
@@ -10,8 +11,12 @@ import org.ifarmr.entity.User;
 import org.ifarmr.enums.TokenType;
 import org.ifarmr.exceptions.EmailAlreadyExistsException;
 import org.ifarmr.exceptions.UsernameAlreadyExistsException;
+import org.ifarmr.exceptions.NotFoundException;
 import org.ifarmr.payload.request.EmailDetails;
+import org.ifarmr.payload.request.LoginRequest;
 import org.ifarmr.payload.request.UserRegisterRequest;
+import org.ifarmr.payload.response.GeneralResponse;
+import org.ifarmr.payload.response.LoginResponse;
 import org.ifarmr.repository.ConfirmationTokenRepository;
 import org.ifarmr.repository.JTokenRepository;
 import org.ifarmr.repository.RoleRepository;
@@ -21,6 +26,9 @@ import org.ifarmr.service.EmailService;
 import org.ifarmr.utils.EmailUtil;
 import org.ifarmr.utils.FullNameFormatter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +50,8 @@ public class AuthServiceImpl implements AuthService{
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final EmailService emailService;
     private final RoleRepository roleRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @Value("${baseUrl}")
     private String baseUrl;
@@ -70,11 +80,10 @@ public class AuthServiceImpl implements AuthService{
             throw new EmailAlreadyExistsException("Email already exists. Login to your account!");
         }
 
-        Optional<User> existingUserByUsername = userRepository.findByUsername(userRegisterRequest.getUsername());
+        Optional<User> existingUserByUsername = userRepository.findByUsername(userRegisterRequest.getUserName());
         if(existingUserByUsername.isPresent()){
             throw new UsernameAlreadyExistsException("Username already exists. Choose another username!");
         }
-
 
         Optional<Role> userRole = roleRepository.findByName("USER");
         if (userRole.isEmpty()) {
@@ -88,7 +97,7 @@ public class AuthServiceImpl implements AuthService{
 
         User newUser = User.builder()
                 .fullName(formattedFullName)
-                .username(userRegisterRequest.getUsername())
+                .username(userRegisterRequest.getUserName())
                 .email(userRegisterRequest.getEmail())
                 .password(passwordEncoder.encode(userRegisterRequest.getPassword()))
                 .roles(roles)
@@ -135,6 +144,44 @@ public class AuthServiceImpl implements AuthService{
             token.setRevoked(true);
         });
         jTokenRepository.saveAll(validUserTokens);
+    }
+
+    @Override
+    public LoginResponse loginUser(LoginRequest loginRequest) {
+        authenticationManager.authenticate( new UsernamePasswordAuthenticationToken
+                (loginRequest.getUsername(), loginRequest.getPassword()) );
+
+        User user = userRepository.findByUsername(loginRequest.getUsername())
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        if(!user.isEnabled()){
+            throw new DisabledException("User account is not enabled, please check your email to enable it");
+        }
+
+        var jwtToken = jwtService.generateToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user,jwtToken);
+
+        Optional<Role> userRole = roleRepository.findByName("USER");
+        if (userRole.isEmpty()) {
+            throw new RuntimeException("Default role USER not found in the database.");
+        }
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole.get());
+
+        return org.ifarmr.payload.response.LoginResponse.builder()
+                .id(user.getId())
+                .token(jwtToken)
+                .username(user.getUsername())
+                .profilePicture(user.getDisplayPhoto())
+                // .role(user.getRoles(roleRepository.findByName(roles.))) Waiting for the role to be set on registration
+                .generalResponse(GeneralResponse.builder()
+                        .ResponseCode("OO2")
+                        .ResponseMessage("Login Success")
+                        .build())
+
+                .build();
     }
 
 

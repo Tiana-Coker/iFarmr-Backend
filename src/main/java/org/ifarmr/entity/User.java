@@ -48,12 +48,11 @@ public class User implements UserDetails {
     @CreationTimestamp
     private LocalDateTime dateJoined;
 
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
-
     private String displayPhoto;
 
     private String businessName;
+
+    private boolean enabled = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -63,7 +62,8 @@ public class User implements UserDetails {
     )
     private Set<Role> roles;
 
-    private boolean enabled = false;
+    @OneToMany(mappedBy = "user")
+    private List<JToken> jTokens;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
