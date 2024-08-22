@@ -1,8 +1,8 @@
 package org.ifarmr.controller;
 
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.ifarmr.enums.Gender;
 import org.ifarmr.payload.request.UserDetailsDto;
 import org.ifarmr.payload.response.CloudinaryResponse;
 import org.ifarmr.repository.UserRepository;
@@ -31,11 +31,24 @@ public class UserController {
     }
 
     // Edit User Details
+
     @PutMapping("/edit-user-details")
-    public ResponseEntity<UserDetailsDto> editUserDetails(@RequestBody UserDetailsDto adminUserDetailsDto) {
+    public ResponseEntity<UserDetailsDto> editUserDetails(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "fullName", required = false) String fullName,
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "gender", required = false) Gender gender) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        return ResponseEntity.ok(userService.editUserDetails(currentUsername, adminUserDetailsDto));
+
+        UserDetailsDto userDetailsDto = UserDetailsDto.builder()
+                .fullName(fullName)
+                .username(username)
+                .gender(gender)
+                .build();
+
+        return ResponseEntity.ok(userService.editUserDetails(currentUsername, userDetailsDto, file));
     }
 
 }
