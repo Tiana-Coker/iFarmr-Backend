@@ -3,7 +3,9 @@ package org.ifarmr.controller;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.ifarmr.payload.request.LoginRequest;
 import org.ifarmr.payload.request.UserRegisterRequest;
+import org.ifarmr.payload.response.LoginResponse;
 import org.ifarmr.service.AuthService;
 import org.ifarmr.service.TokenValidationService;
 import org.springframework.http.ResponseEntity;
@@ -48,4 +50,12 @@ public class AuthController {
             throw new RuntimeException(e);
         }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
+
+        return ResponseEntity.ok(authService.loginUser(loginRequest));
+    }
+
+
 }

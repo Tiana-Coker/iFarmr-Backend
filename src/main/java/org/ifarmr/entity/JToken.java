@@ -27,4 +27,3 @@ public class JToken extends BaseClass {
     @JoinColumn(name = "user_id")
     public User user;
 }
-
