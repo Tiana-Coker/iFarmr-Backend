@@ -29,7 +29,6 @@ public class UserController {
     @PutMapping("/upload/profilephoto")
     public ResponseEntity<CloudinaryResponse> profilePicture (@RequestParam("file") MultipartFile file){
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        logger.info("Uploading profile picture for user: {}", username);
 
         return ResponseEntity.ok(fileUploadService.uploadProfilePicture(username, file));
     }
@@ -40,11 +39,9 @@ public class UserController {
             @RequestParam(value = "fullName", required = false) String fullName,
             @RequestParam(value = "username", required = false) String username,
             @RequestParam(value = "gender", required = false) Gender gender) {
-        logger.info("Received request to edit user details");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        logger.info("Editing user details for user: {}", currentUsername);
 
         UserDetailsDto userDetailsDto = UserDetailsDto.builder()
                 .fullName(fullName)
