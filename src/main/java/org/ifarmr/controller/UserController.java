@@ -5,9 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.ifarmr.enums.Gender;
 import org.ifarmr.payload.request.UserDetailsDto;
 import org.ifarmr.payload.response.CloudinaryResponse;
-import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.FileUploadService;
 import org.ifarmr.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,24 +24,27 @@ public class UserController {
     private final UserService userService;
     private final FileUploadService fileUploadService;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @PutMapping("/upload/profilephoto")
     public ResponseEntity<CloudinaryResponse> profilePicture (@RequestParam("file") MultipartFile file){
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        logger.info("Uploading profile picture for user: {}", username);
 
-        return ResponseEntity.ok(fileUploadService.uploadProfilePicture (username, file));
+        return ResponseEntity.ok(fileUploadService.uploadProfilePicture(username, file));
     }
-
-    // Edit User Details
 
     @PutMapping("/edit-user-details")
     public ResponseEntity<UserDetailsDto> editUserDetails(
-            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "file", required = false) MultipartFile file,
             @RequestParam(value = "fullName", required = false) String fullName,
             @RequestParam(value = "username", required = false) String username,
             @RequestParam(value = "gender", required = false) Gender gender) {
+        logger.info("Received request to edit user details");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
+        logger.info("Editing user details for user: {}", currentUsername);
 
         UserDetailsDto userDetailsDto = UserDetailsDto.builder()
                 .fullName(fullName)
@@ -50,5 +54,4 @@ public class UserController {
 
         return ResponseEntity.ok(userService.editUserDetails(currentUsername, userDetailsDto, file));
     }
-
 }
