@@ -43,7 +43,6 @@ public class TaskServiceImpl implements TaskService {
 
 
         return TaskResponseDto.builder()
-                 .responseCode("002")
                  .responseMessage("Task successfully created! ")
                  .taskInfo(TaskInfo.builder()
                          .title(task.getTitle())
