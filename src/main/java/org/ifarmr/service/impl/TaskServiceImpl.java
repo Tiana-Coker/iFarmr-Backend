@@ -4,11 +4,13 @@ import org.ifarmr.entity.Task;
 import org.ifarmr.entity.User;
 import org.ifarmr.exceptions.ConflictException;
 import org.ifarmr.exceptions.IFarmServiceException;
+import org.ifarmr.exceptions.NotFoundException;
 import org.ifarmr.payload.request.NewTaskRequest;
 import org.ifarmr.payload.response.TaskInfo;
 import org.ifarmr.payload.response.TaskResponseDto;
 import org.ifarmr.repository.TaskRepository;
 import org.ifarmr.service.TaskService;
+import org.ifarmr.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,14 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private UserService userService;
+
     @Override
-    public TaskResponseDto createTask(NewTaskRequest taskRequest, User user) {
+    public TaskResponseDto createTask(NewTaskRequest taskRequest, String currentUsername) {
+        User user = userService.findByUsername(currentUsername)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
 
         boolean taskExists = taskRepository.existsByTitleAndDueDateAndUser(taskRequest.getTitle(), taskRequest.getDueDate(), user);
         if (taskExists) {

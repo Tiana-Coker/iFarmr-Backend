@@ -23,8 +23,6 @@ public class TaskController {
     private TaskService taskService;
 
 
-    @Autowired
-    private UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<TaskResponseDto> createTask(@Valid @RequestBody NewTaskRequest taskRequest) {
@@ -32,10 +30,8 @@ public class TaskController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
 
-        User user = userService.findByUsername(currentUsername)
-                .orElseThrow(() -> new NotFoundException("User not found"));
 
-        TaskResponseDto createdTask = taskService.createTask(taskRequest, user);
+        TaskResponseDto createdTask = taskService.createTask(taskRequest, currentUsername);
 
         return ResponseEntity.status(201).body(createdTask);
     }
