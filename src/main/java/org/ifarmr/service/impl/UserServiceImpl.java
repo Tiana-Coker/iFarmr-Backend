@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -78,5 +79,10 @@ public class UserServiceImpl implements UserService {
                 .gender(updatedUser.getGender())
                 .profilePictureUrl(updatedUser.getDisplayPhoto())
                 .build();
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }
