@@ -1,8 +1,10 @@
 package org.ifarmr.exceptions;
 
+import org.ifarmr.payload.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -68,12 +70,35 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflictException(ConflictException ex){
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), "409");
+        return new ResponseEntity<>(errorResponse,HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(IFarmServiceException.class)
+    public ResponseEntity<ErrorResponse> handleIFarmServiceException(IFarmServiceException ex){
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), "500" );
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex){
+        ErrorResponse errorResponse = new ErrorResponse("An unexpected error occurred", "500");
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
+
+
+
     @ExceptionHandler(FileUploadException.class)
     public ResponseEntity<String> handleFileUploadException(FileUploadException ex) {
         // Customize the response entity as needed
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ex.getMessage());
+
     }
 
 }
