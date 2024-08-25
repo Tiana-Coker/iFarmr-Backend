@@ -2,11 +2,9 @@ package org.ifarmr.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+import org.ifarmr.enums.TaskCategory;
 
 import java.time.LocalDate;
 
@@ -26,7 +24,8 @@ public class Task extends BaseClass{
 
     private String description;
 
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private TaskCategory category;
 
     private LocalDate dueDate;
 
