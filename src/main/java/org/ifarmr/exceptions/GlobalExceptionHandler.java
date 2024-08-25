@@ -68,4 +68,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<String> handleFileUploadException(FileUploadException ex) {
+        // Customize the response entity as needed
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ex.getMessage());
+    }
+
 }
