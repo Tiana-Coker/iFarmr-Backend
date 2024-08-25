@@ -8,8 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class TaskResponseDto {
- private String responseCode;
-
  private String responseMessage;
 
  private TaskInfo taskInfo;

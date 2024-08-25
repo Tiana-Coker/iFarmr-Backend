@@ -55,7 +55,7 @@ public class TaskServiceImpl implements TaskService {
                  .taskInfo(TaskInfo.builder()
                          .title(task.getTitle())
                          .location(task.getLocation())
-                         .category(task.getCategory())
+                         .category(task.getCategory().name())
                          .dueDate(task.getDueDate())
                          .description(task.getDescription())
                          .build())
