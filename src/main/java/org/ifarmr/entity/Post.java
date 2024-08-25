@@ -21,7 +21,7 @@ public class Post extends BaseClass{
 
     private String content;
 
-    private String photoUpload;
+    private String photoUrl;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
