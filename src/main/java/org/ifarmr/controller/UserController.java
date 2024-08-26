@@ -1,6 +1,5 @@
 package org.ifarmr.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ifarmr.enums.Gender;
 import org.ifarmr.payload.request.UserDetailsDto;

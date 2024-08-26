@@ -3,19 +3,26 @@ package org.ifarmr.service.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.RequiredArgsConstructor;
+import org.ifarmr.entity.Comment;
+import org.ifarmr.entity.Like;
 import org.ifarmr.entity.Post;
 import org.ifarmr.entity.User;
 import org.ifarmr.exceptions.FileUploadException;
 import org.ifarmr.exceptions.NotFoundException;
 import org.ifarmr.payload.request.PostRequest;
+import org.ifarmr.payload.response.PopularPostResponse;
 import org.ifarmr.payload.response.PostResponse;
+import org.ifarmr.payload.response.UserSummary;
 import org.ifarmr.repository.PostRepository;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.PostService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -60,6 +67,54 @@ public class PostServiceImpl implements PostService {
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
                 .photoUrl(fileUrl)
+                .dateCreated(post.getDateCreated())
                 .build();
     }
+
+    public List<PopularPostResponse> getPopularPosts() {
+        List<Post> posts = postRepository.findAll();
+        // Sort posts based on the popularity score and return the top 3
+        return posts.stream()
+                .sorted(Comparator.comparingInt(this::popularityScore).reversed())
+                .limit(3)
+                .map(this::mapToPopularPostResponse)
+                .collect(Collectors.toList());
+    }
+    private int popularityScore(Post post) {
+        int commentWeight = 3;
+        int likeWeight = 1;
+
+        int totalComments = (post.getComments() != null) ? post.getComments().size() : 0;
+        int totalLikes = (post.getLikes() != null) ? post.getLikes().size() : 0;
+
+        return (totalComments * commentWeight) + (totalLikes * likeWeight);
+    }
+    private PopularPostResponse mapToPopularPostResponse(Post post) {
+        return PopularPostResponse.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .photoUrl(post.getPhotoUrl())
+                .dateCreated(post.getDateCreated())
+                .commentCount((post.getComments() != null) ? post.getComments().size() : 0)
+                .likeCount((post.getLikes() != null) ? post.getLikes().size() : 0)
+                .postedBy(mapToUserSummary(post.getUser()))
+                .commentedBy(mapCommentsToUserSummary(post.getComments()))
+                .build();
+    }
+
+        private UserSummary mapToUserSummary(User user) {
+            if (user == null) return null;
+            return UserSummary.builder()
+                    .name(user.getFullName())
+                    .photoUrl(user.getDisplayPhoto())
+                    .build();
+        }
+
+        private List<UserSummary> mapCommentsToUserSummary(List<Comment> comments) {
+            if (comments == null) return List.of();
+            return comments.stream()
+                    .map(comment -> mapToUserSummary(comment.getUser()))
+                    .collect(Collectors.toList());
+        }
+
 }
