@@ -3,6 +3,7 @@ package org.ifarmr.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.ifarmr.entity.Like;
 import org.ifarmr.entity.Post;
+import org.ifarmr.entity.User;
 import org.ifarmr.repository.LikeRepository;
 import org.ifarmr.repository.PostRepository;
 import org.ifarmr.repository.UserRepository;
@@ -20,18 +21,21 @@ public class LikeServiceImpl implements LikeService {
     private final UserRepository userRepository;
 
     @Override
-    public void likeOrUnlikePost(Long postId, Long userId) {
+    public void likeOrUnlikePost(Long postId, String username) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId, userId);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId, user.getId());
 
         if (existingLike.isPresent()) {
             likeRepository.delete(existingLike.get());
         } else {
             Like like = new Like();
             like.setPost(post);
-            like.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
+            like.setUser(user);  // Set the user
             likeRepository.save(like);
         }
     }
