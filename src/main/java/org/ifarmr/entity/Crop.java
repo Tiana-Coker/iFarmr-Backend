@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.ifarmr.enums.Status;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @Table(name = "crop_tbl")
 public class Crop extends BaseClass {
 
-    private String name;
+    private String cropName;
 
     private String cropType;
 
@@ -34,6 +35,8 @@ public class Crop extends BaseClass {
     private String wateringFrequency;
 
     private String fertilisingFrequency;
+
+    private Status status;
 
     private String pestAndDiseases;
 
