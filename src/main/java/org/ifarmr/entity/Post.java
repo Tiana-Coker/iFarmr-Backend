@@ -37,6 +37,4 @@ public class Post extends BaseClass{
     @JsonManagedReference
     private List<Like> likes;
 
-
-
 }

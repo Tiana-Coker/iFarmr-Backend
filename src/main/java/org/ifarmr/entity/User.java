@@ -4,15 +4,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.ifarmr.enums.Gender;
-//import org.ifarmr.enums.Role;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -47,6 +44,9 @@ public class User implements UserDetails {
 
     @CreationTimestamp
     private LocalDateTime dateJoined;
+
+    @UpdateTimestamp
+    private LocalDateTime modifiedDate;
 
     private String displayPhoto;
 
