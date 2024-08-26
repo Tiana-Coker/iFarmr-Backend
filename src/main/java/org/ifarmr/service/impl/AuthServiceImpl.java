@@ -15,7 +15,6 @@ import org.ifarmr.exceptions.NotFoundException;
 import org.ifarmr.payload.request.EmailDetails;
 import org.ifarmr.payload.request.LoginRequest;
 import org.ifarmr.payload.request.UserRegisterRequest;
-import org.ifarmr.payload.response.GeneralResponse;
 import org.ifarmr.payload.response.LoginResponse;
 import org.ifarmr.repository.ConfirmationTokenRepository;
 import org.ifarmr.repository.JTokenRepository;
@@ -38,6 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -101,6 +101,7 @@ public class AuthServiceImpl implements AuthService{
                 .email(userRegisterRequest.getEmail())
                 .password(passwordEncoder.encode(userRegisterRequest.getPassword()))
                 .roles(roles)
+                .gender(userRegisterRequest.getGender())
                 .build();
 
         User savedUser = userRepository.save(newUser);
@@ -162,24 +163,17 @@ public class AuthServiceImpl implements AuthService{
         revokeAllUserTokens(user);
         saveUserToken(user,jwtToken);
 
-        Optional<Role> userRole = roleRepository.findByName("USER");
-        if (userRole.isEmpty()) {
-            throw new RuntimeException("Default role USER not found in the database.");
-        }
 
-        Set<Role> roles = new HashSet<>();
-        roles.add(userRole.get());
 
         return org.ifarmr.payload.response.LoginResponse.builder()
                 .id(user.getId())
                 .token(jwtToken)
                 .username(user.getUsername())
                 .profilePicture(user.getDisplayPhoto())
-                // .role(user.getRoles(roleRepository.findByName(roles.))) Waiting for the role to be set on registration
-                .generalResponse(GeneralResponse.builder()
-                        .ResponseCode("OO2")
-                        .ResponseMessage("Login Success")
-                        .build())
+                .role(user.getRoles().stream()
+                        .map(Role::getName)
+                        .collect(Collectors.toSet()))
+                .message("Login Success")
 
                 .build();
     }

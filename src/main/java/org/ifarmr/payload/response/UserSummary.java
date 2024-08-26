@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GeneralResponse {
+public class UserSummary {
 
-    private String ResponseCode;
-
-    private String ResponseMessage;
+        private String name;
+        private String photoUrl;
 
 }

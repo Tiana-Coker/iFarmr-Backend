@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -22,6 +23,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled = true)  // Enable method-level security
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -45,11 +47,12 @@ public class SecurityConfig {
                                         antMatcher(HttpMethod.GET, "/v3/api-docs/**"),
                                         antMatcher(HttpMethod.GET, "/swagger-resources/**")
                                 ).permitAll()
+                                // Role-based access control to the secured endpoints
+                                .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN") // Admin-specific endpoints
+                                .requestMatchers("/api/v1/user/**").hasAuthority("USER") // // User-specific endpoints
+                                .requestMatchers("/api/v1/posts/**").hasAuthority("USER")
+                                .requestMatchers("/api/v1/tasks/**").hasAuthority("USER")
 
-                                // Secured endpoints
-                                .requestMatchers("/api/v1/user/**").authenticated() // Any authenticated user can access these endpoints
-
-                                // Any other request
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

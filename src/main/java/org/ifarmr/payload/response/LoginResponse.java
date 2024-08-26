@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ifarmr.entity.Role;
-
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -21,9 +18,9 @@ public class LoginResponse {
 
     private String username;
 
-    private Role role;
-
     private String profilePicture;
 
-    private GeneralResponse generalResponse;
+    private Set<String> role;
+
+    private String message;
 }
