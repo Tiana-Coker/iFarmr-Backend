@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface UserService {
     UserDetailsDto editUserDetails(String username, UserDetailsDto userDetailsDto, MultipartFile file);
-    Optional<User> findByUsername(String username);
+
 }
