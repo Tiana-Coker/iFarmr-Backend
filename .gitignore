@@ -19,6 +19,7 @@ rough
 *.iws
 *.iml
 *.ipr
+.idea/misc.xml
 
 ### NetBeans ###
 /nbproject/private/
