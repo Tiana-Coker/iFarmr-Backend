@@ -78,8 +78,6 @@ public class PostServiceImpl implements PostService {
                 .build();
     }
 
-
-
     @Override
     public String likeOrUnlikePost(Long postId, String username) {
         Post post = postRepository.findById(postId)
