@@ -78,8 +78,10 @@ public class PostServiceImpl implements PostService {
                 .build();
     }
 
+
+
     @Override
-    public void likeOrUnlikePost(Long postId, String username) {
+    public String likeOrUnlikePost(Long postId, String username) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
@@ -90,16 +92,18 @@ public class PostServiceImpl implements PostService {
 
         if (existingLike.isPresent()) {
             likeRepository.delete(existingLike.get());
+            return "Post unliked successfully.";
         } else {
             Like like = new Like();
             like.setPost(post);
             like.setUser(user);
             likeRepository.save(like);
+            return "Post liked successfully.";
         }
     }
 
     @Override
-    public void commentOnPost(String username, CommentDto commentDto) {
+    public CommentDto commentOnPost(String username, CommentDto commentDto) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -112,7 +116,15 @@ public class PostServiceImpl implements PostService {
         comment.setPost(post);
         comment.setUser(user);
 
-        commentRepository.save(comment);
+        Comment savedComment = commentRepository.save(comment);
+
+        // Return the saved comment details as CommentDto
+        CommentDto savedCommentDto = new CommentDto();
+        savedCommentDto.setContent(savedComment.getContent());
+        savedCommentDto.setParentContentId(savedComment.getParentContentId());
+        savedCommentDto.setPostId(post.getId());  // Ensure that postId is part of CommentDto
+
+        return savedCommentDto;
     }
 
     public List<PopularPostResponse> getPopularPosts() {

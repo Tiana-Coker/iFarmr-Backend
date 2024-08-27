@@ -1,6 +1,5 @@
 package org.ifarmr.controller;
 
-
 import lombok.RequiredArgsConstructor;
 import org.ifarmr.entity.Post;
 import org.ifarmr.payload.request.CommentDto;
@@ -38,19 +37,19 @@ public class PostController {
 
 
     @PostMapping("/{postId}/like")
-    public void likeOrUnlikePost(@PathVariable Long postId) {
+    public String likeOrUnlikePost(@PathVariable Long postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
 
-        postService.likeOrUnlikePost(postId, currentUsername);
+        return postService.likeOrUnlikePost(postId, currentUsername);
     }
 
     @PostMapping("/comment")
-    public void commentOnPost(@RequestBody CommentDto commentDto) {
+    public CommentDto commentOnPost(@RequestBody CommentDto commentDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
 
-        postService.commentOnPost(currentUsername, commentDto);
+        return postService.commentOnPost(currentUsername, commentDto);
     }
 
     @GetMapping("/popular")
@@ -58,7 +57,6 @@ public class PostController {
         List<PopularPostResponse> topPosts = postService.getPopularPosts();
         return ResponseEntity.ok(topPosts);
     }
-
 
 
 }

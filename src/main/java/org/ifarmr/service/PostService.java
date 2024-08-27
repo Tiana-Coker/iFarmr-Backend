@@ -12,8 +12,8 @@ public interface PostService {
 
     PostResponse createPost(PostRequest postRequest, String userName);
 
-    void likeOrUnlikePost(Long postId, String username);
-    void commentOnPost(String username, CommentDto commentDto);
+    String likeOrUnlikePost(Long postId, String username);
+    CommentDto commentOnPost(String username, CommentDto commentDto);
 
      List<PopularPostResponse> getPopularPosts();
 
