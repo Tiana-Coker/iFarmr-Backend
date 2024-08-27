@@ -11,6 +11,7 @@ import org.ifarmr.payload.response.TaskInfo;
 import org.ifarmr.payload.response.TaskResponseDto;
 import org.ifarmr.payload.response.UpcomingTaskResponse;
 import org.ifarmr.repository.TaskRepository;
+import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.TaskService;
 import org.ifarmr.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,12 @@ public class TaskServiceImpl implements TaskService {
     private TaskRepository taskRepository;
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
 
     @Override
     public TaskResponseDto createTask(NewTaskRequest taskRequest, String currentUsername) {
-        User user = userService.findByUsername(currentUsername)
+        User user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
 
@@ -76,7 +77,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<UpcomingTaskResponse> getUpcomingTasks(String username) {
-        User user = userService.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("user not found"));
 
         List<Task> tasks = taskRepository.findTasksByUserOrderByDueDateAsc(user);
