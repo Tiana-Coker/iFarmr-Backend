@@ -52,7 +52,9 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/user/**").hasAuthority("USER") // // User-specific endpoints
                                 .requestMatchers("/api/v1/posts/**").hasAuthority("USER")
                                 .requestMatchers("/api/v1/tasks/**").hasAuthority("USER")
+                                .requestMatchers("/api/v1/crops/**").hasAuthority("USER")
                                 .requestMatchers("/api/v1/inventory/**").hasAuthority("USER")
+                                .requestMatchers("/api/v1/livestock/**").hasAuthority("USER")
 
                                 .anyRequest().authenticated()
                 )
