@@ -1,7 +1,7 @@
 package org.ifarmr.service;
 
-
 import org.ifarmr.entity.Post;
+import org.ifarmr.payload.request.CommentDto;
 import org.ifarmr.payload.request.PostRequest;
 import org.ifarmr.payload.response.PopularPostResponse;
 import org.ifarmr.payload.response.PostResponse;
@@ -12,6 +12,11 @@ public interface PostService {
 
     PostResponse createPost(PostRequest postRequest, String userName);
 
+    String likeOrUnlikePost(Long postId, String username);
+
+    CommentDto commentOnPost(String username, CommentDto commentDto);
+
      List<PopularPostResponse> getPopularPosts();
 
+    List<PostResponse> getPostsByUser(String username);
 }

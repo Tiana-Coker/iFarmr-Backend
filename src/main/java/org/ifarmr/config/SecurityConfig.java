@@ -53,6 +53,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/posts/**").hasAuthority("USER")
                                 .requestMatchers("/api/v1/tasks/**").hasAuthority("USER")
                                 .requestMatchers("/api/v1/crops/**").hasAuthority("USER")
+                                .requestMatchers("/api/v1/inventory/**").hasAuthority("USER")
 
                                 .anyRequest().authenticated()
                 )

@@ -15,7 +15,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Like extends BaseClass{
+public class Like extends BaseClass {
 
     private Integer countLike;
 
@@ -30,4 +30,10 @@ public class Like extends BaseClass{
     @JsonBackReference("like-post")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonBackReference("like-user")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private User user;
 }
