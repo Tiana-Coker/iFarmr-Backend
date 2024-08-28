@@ -9,12 +9,8 @@ import org.ifarmr.entity.JToken;
 import org.ifarmr.entity.Role;
 import org.ifarmr.entity.User;
 import org.ifarmr.enums.TokenType;
-import org.ifarmr.exceptions.EmailAlreadyExistsException;
-import org.ifarmr.exceptions.UsernameAlreadyExistsException;
-import org.ifarmr.exceptions.NotFoundException;
-import org.ifarmr.payload.request.EmailDetails;
-import org.ifarmr.payload.request.LoginRequest;
-import org.ifarmr.payload.request.UserRegisterRequest;
+import org.ifarmr.exceptions.*;
+import org.ifarmr.payload.request.*;
 import org.ifarmr.payload.response.LoginResponse;
 import org.ifarmr.repository.ConfirmationTokenRepository;
 import org.ifarmr.repository.JTokenRepository;
@@ -31,6 +27,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
@@ -52,6 +49,8 @@ public class AuthServiceImpl implements AuthService{
     private final RoleRepository roleRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final EmailUtil emailUtil;
+
 
     @Value("${baseUrl}")
     private String baseUrl;
@@ -177,6 +176,90 @@ public class AuthServiceImpl implements AuthService{
 
                 .build();
     }
+
+    //important
+    @Override
+    public String forgotPasswordRequest(PasswordResetRequest passwordResetRequest) throws MessagingException {
+        Optional<User> userOptional = userRepository.findByEmail(passwordResetRequest.getEmail());
+
+        User user = userOptional.get();
+        ConfirmationTokenModel confirmationToken = new ConfirmationTokenModel(user);
+        confirmationTokenRepository.save(confirmationToken);
+
+        String resetUrl = emailUtil.getResetPasswordUrl(confirmationToken.getToken());
+
+        EmailDetails emailDetails = EmailDetails.builder()
+                .fullName(user.getFullName())
+                .recipient(user.getEmail())
+                .link(resetUrl)
+                .subject("IFARMR PASSWORD RESET")
+                .build();
+        emailService.sendEmailAlerts(emailDetails, "forgot-password");
+
+        return "Password reset email sent";
+    }
+
+
+    @Override
+    public String confirmResetPassword(String token, ConfirmPasswordRequest confirmPasswordRequest) throws MessagingException {
+        Optional<ConfirmationTokenModel> tokenOptional = confirmationTokenRepository.findByToken(token);
+
+
+        ConfirmationTokenModel confirmationToken = tokenOptional.get();
+
+        // Check if token is expired
+        if (confirmationToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new TokenExpiredException("Token has expired");
+        }
+
+        // Validate password match
+        if (!confirmPasswordRequest.getNewPassword().equals(confirmPasswordRequest.getConfirmNewPassword())) {
+            throw new PasswordMismatchException("New passwords do not match");
+        }
+
+        // Update the user's password
+        User user = confirmationToken.getUser();
+        user.setPassword(passwordEncoder.encode(confirmPasswordRequest.getNewPassword()));
+        userRepository.save(user);
+
+        // Delete the token after successful password reset
+        confirmationTokenRepository.delete(confirmationToken);
+
+        sendPasswordChangeConfirmationEmail(user);
+
+
+        return "Password reset successfully";
+    }
+
+    private void sendPasswordChangeConfirmationEmail(User user) throws MessagingException {
+        String loginUrl = baseUrl + "/login";  // Adjust the login URL as necessary
+
+        EmailDetails emailDetails = EmailDetails.builder()
+                .fullName(user.getFullName())
+                .recipient(user.getEmail())
+                .subject("Your iFarmr Password Has Been Successfully Changed")
+                .link(loginUrl)  // Include the login link in the email
+                .build();
+
+        emailService.sendEmailAlerts(emailDetails, "password-change-confirmation");
+    }
+
+
+
+    @Override
+    public void validateToken(String token) {
+        Optional<ConfirmationTokenModel> tokenOptional = confirmationTokenRepository.findByToken(token);
+
+
+        ConfirmationTokenModel confirmationToken = tokenOptional.get();
+
+        // Check if token is expired
+        if (confirmationToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new TokenExpiredException("Token has expired");
+        }
+    }
+
+
 
 
 }
