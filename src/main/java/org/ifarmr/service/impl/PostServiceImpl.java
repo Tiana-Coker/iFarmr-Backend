@@ -9,10 +9,13 @@ import org.ifarmr.entity.Post;
 import org.ifarmr.entity.User;
 import org.ifarmr.exceptions.FileUploadException;
 import org.ifarmr.exceptions.NotFoundException;
+import org.ifarmr.payload.request.CommentDto;
 import org.ifarmr.payload.request.PostRequest;
 import org.ifarmr.payload.response.PopularPostResponse;
 import org.ifarmr.payload.response.PostResponse;
 import org.ifarmr.payload.response.UserSummary;
+import org.ifarmr.repository.CommentRepository;
+import org.ifarmr.repository.LikeRepository;
 import org.ifarmr.repository.PostRepository;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.PostService;
@@ -22,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -31,6 +35,9 @@ public class PostServiceImpl implements PostService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final Cloudinary cloudinary;
+
+    private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public PostResponse createPost(PostRequest postRequest, String userName) {
@@ -69,6 +76,70 @@ public class PostServiceImpl implements PostService {
                 .photoUrl(fileUrl)
                 .dateCreated(post.getDateCreated())
                 .build();
+    }
+
+    @Override
+    public String likeOrUnlikePost(Long postId, String username) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("Post not found"));
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId, user.getId());
+
+        if (existingLike.isPresent()) {
+            likeRepository.delete(existingLike.get());
+            return "Post unliked successfully.";
+        } else {
+            Like like = new Like();
+            like.setPost(post);
+            like.setUser(user);
+            likeRepository.save(like);
+            return "Post liked successfully.";
+        }
+    }
+
+    @Override
+    public CommentDto commentOnPost(String username, CommentDto commentDto) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        Post post = postRepository.findById(commentDto.getPostId())
+                .orElseThrow(() -> new NotFoundException("Post not found"));
+
+        Comment comment = new Comment();
+        comment.setContent(commentDto.getContent());
+        comment.setParentContentId(commentDto.getParentContentId());
+        comment.setPost(post);
+        comment.setUser(user);
+
+        Comment savedComment = commentRepository.save(comment);
+
+        // Return the saved comment details as CommentDto
+        CommentDto savedCommentDto = new CommentDto();
+        savedCommentDto.setContent(savedComment.getContent());
+        savedCommentDto.setParentContentId(savedComment.getParentContentId());
+        savedCommentDto.setPostId(post.getId());  // Ensure that postId is part of CommentDto
+
+        return savedCommentDto;
+    }
+
+    @Override
+    public List<PostResponse> getPostsByUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        List<Post> userPosts = postRepository.findByUserId(user.getId());
+
+        return userPosts.stream()
+                .map(post -> PostResponse.builder()
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .photoUrl(post.getPhotoUrl())
+                        .dateCreated(post.getDateCreated())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     public List<PopularPostResponse> getPopularPosts() {
