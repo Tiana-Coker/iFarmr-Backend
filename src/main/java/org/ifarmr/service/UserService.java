@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface UserService {
     UserDetailsDto editUserDetails(String username, UserDetailsDto userDetailsDto, MultipartFile file);
 
+
+
     @Transactional
-    List<Inventory> getInventoryForUser(Long userId);
+    List<Inventory> getInventoryForUser(User authenticatedUser);
 }

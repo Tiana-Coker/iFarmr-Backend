@@ -2,6 +2,7 @@ package org.ifarmr.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.ifarmr.entity.Inventory;
+import org.ifarmr.entity.User;
 import org.ifarmr.enums.Gender;
 import org.ifarmr.exceptions.AccessDeniedException;
 import org.ifarmr.exceptions.InventoryEmptyException;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -58,10 +60,10 @@ public class UserController {
         return ResponseEntity.ok(userService.editUserDetails(currentUsername, userDetailsDto, file));
     }
 
-    @GetMapping("/{userId}/inventory")
-    public ResponseEntity<?> getAllInventoryByUserId(@PathVariable Long userId) {
+    @GetMapping("/inventory")
+    public ResponseEntity<?> getAllInventoryByUser(@AuthenticationPrincipal User authenticatedUser) {
         try {
-            List<Inventory> inventoryList = userService.getInventoryForUser(userId);
+            List<Inventory> inventoryList = userService.getInventoryForUser(authenticatedUser);
             return ResponseEntity.ok(inventoryList);
         } catch (UserNotFoundException | AccessDeniedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());

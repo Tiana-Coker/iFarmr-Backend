@@ -2,7 +2,6 @@ package org.ifarmr.service.impl;
 
 import org.ifarmr.entity.Inventory;
 import org.ifarmr.entity.User;
-import org.ifarmr.exceptions.AccessDeniedException;
 import org.ifarmr.exceptions.InventoryEmptyException;
 import org.ifarmr.exceptions.UserNotFoundException;
 import org.ifarmr.payload.request.UserDetailsDto;
@@ -14,8 +13,6 @@ import org.ifarmr.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -92,23 +89,10 @@ public class UserServiceImpl implements UserService {
     }
     @Transactional
     @Override
-    public List<Inventory> getInventoryForUser(Long userId) {
-        // Retrieve the currently authenticated user's username
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-
-        // Find the user by their username from the authentication context
-        User authenticatedUser = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new UserNotFoundException("Authenticated user not found"));
-
-        // Ensure that the authenticated user is the same as the userId being accessed
-        if (!authenticatedUser.getId().equals(userId)) {
-            throw new AccessDeniedException("You do not have permission to access this inventory");
-        }
-
-        // Fetch inventory for the user
+    public List<Inventory> getInventoryForUser(User authenticatedUser) {
+        // Fetch inventory for the authenticated user
         List<Inventory> inventoryList = inventoryRepository.findAll().stream()
-                .filter(inventory -> inventory.getUser().getId().equals(userId))
+                .filter(inventory -> inventory.getUser().getId().equals(authenticatedUser.getId()))
                 .collect(Collectors.toList());
 
         if (inventoryList.isEmpty()) {
