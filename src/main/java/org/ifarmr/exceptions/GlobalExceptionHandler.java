@@ -84,14 +84,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex){
-        ErrorResponse errorResponse = new ErrorResponse("An unexpected error occurred", "500");
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-
-    }
-
-
     @ExceptionHandler(FileUploadException.class)
     public ResponseEntity<String> handleFileUploadException(FileUploadException ex) {
         return ResponseEntity
@@ -106,8 +98,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        ErrorResponse errorResponse = new ErrorResponse("An unexpected error occurred: " + ex.getMessage(), "500");
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex){
+        ErrorResponse errorResponse = new ErrorResponse("An unexpected error occurred", "500");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

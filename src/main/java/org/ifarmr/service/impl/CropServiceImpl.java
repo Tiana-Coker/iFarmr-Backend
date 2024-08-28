@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class CropServiceImpl implements CropService {
 
@@ -64,8 +66,8 @@ public class CropServiceImpl implements CropService {
                     .cropInfo(CropInfo.builder()
                             .cropName(savedCrop.getCropName())
                             .cropType(savedCrop.getCropType())
-                            .sowDate(savedCrop.getSowDate().toString())
-                            .harvestDate(savedCrop.getHarvestDate().toString())
+                            .sowDate(LocalDate.parse(savedCrop.getSowDate().toString()))
+                            .harvestDate(LocalDate.parse(savedCrop.getHarvestDate().toString()))
                             .numberOfSeedlings(savedCrop.getNumberOfSeedlings())
                             .costOfSeedlings(savedCrop.getCostOfSeedlings())
                             .wateringFrequency(savedCrop.getWateringFrequency())
