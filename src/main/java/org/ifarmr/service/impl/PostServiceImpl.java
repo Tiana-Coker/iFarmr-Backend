@@ -113,6 +113,8 @@ public class PostServiceImpl implements PostService {
         private List<UserSummary> mapCommentsToUserSummary(List<Comment> comments) {
             if (comments == null) return List.of();
             return comments.stream()
+                    .sorted(Comparator.comparing(Comment::getDateCreated).reversed())
+                    .limit(3)
                     .map(comment -> mapToUserSummary(comment.getUser()))
                     .collect(Collectors.toList());
         }
