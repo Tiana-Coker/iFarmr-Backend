@@ -81,10 +81,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public String likeOrUnlikePost(Long postId, String username) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NotFoundException("Post not found"));
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId, user.getId());
 
@@ -103,10 +103,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public CommentDto commentOnPost(String username, CommentDto commentDto) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         Post post = postRepository.findById(commentDto.getPostId())
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NotFoundException("Post not found"));
 
         Comment comment = new Comment();
         comment.setContent(commentDto.getContent());
