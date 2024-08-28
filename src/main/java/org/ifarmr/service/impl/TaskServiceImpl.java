@@ -1,6 +1,5 @@
 package org.ifarmr.service.impl;
 
-import jakarta.annotation.PostConstruct;
 import org.ifarmr.entity.Task;
 import org.ifarmr.entity.User;
 import org.ifarmr.exceptions.ConflictException;
@@ -13,7 +12,6 @@ import org.ifarmr.payload.response.UpcomingTaskResponse;
 import org.ifarmr.repository.TaskRepository;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.TaskService;
-import org.ifarmr.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +20,6 @@ import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
