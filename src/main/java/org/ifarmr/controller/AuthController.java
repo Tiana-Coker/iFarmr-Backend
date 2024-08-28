@@ -3,12 +3,16 @@ package org.ifarmr.controller;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.ifarmr.exceptions.TokenExpiredException;
+import org.ifarmr.payload.request.ConfirmPasswordRequest;
 import org.ifarmr.payload.request.LoginRequest;
+import org.ifarmr.payload.request.PasswordResetRequest;
 import org.ifarmr.payload.request.UserRegisterRequest;
 import org.ifarmr.payload.response.LoginResponse;
 import org.ifarmr.service.AuthService;
 import org.ifarmr.service.TokenValidationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -56,6 +60,36 @@ public class AuthController {
 
         return ResponseEntity.ok(authService.loginUser(loginRequest));
     }
+
+    //important
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPasswordRequest(@Valid @RequestBody PasswordResetRequest passwordResetRequest) {
+        try {
+            String response = authService.forgotPasswordRequest(passwordResetRequest);
+            return ResponseEntity.ok(response);
+        } catch (MessagingException e) {
+            return ResponseEntity.status(500).body("An error occurred while sending the password reset email.");
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/confirm-forget-password-token")
+    public ResponseEntity<?> confirmPasswordForget(@RequestParam("token") String token) {
+        try {
+            authService.validateToken(token);
+            return ResponseEntity.ok("Token confirmed successfully.");
+        } catch (TokenExpiredException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<?> confirmPasswordReset(@RequestParam("token") String token, @Valid @RequestBody ConfirmPasswordRequest confirmPasswordRequest) throws MessagingException {
+        String response = authService.confirmResetPassword(token, confirmPasswordRequest);
+        return ResponseEntity.ok(response);
+    }
+
 
 
 }
