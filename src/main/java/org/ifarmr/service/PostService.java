@@ -13,8 +13,10 @@ public interface PostService {
     PostResponse createPost(PostRequest postRequest, String userName);
 
     String likeOrUnlikePost(Long postId, String username);
+
     CommentDto commentOnPost(String username, CommentDto commentDto);
 
      List<PopularPostResponse> getPopularPosts();
 
+    List<PostResponse> getPostsByUser(String username);
 }

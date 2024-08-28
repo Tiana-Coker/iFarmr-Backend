@@ -35,7 +35,6 @@ public class PostController {
         return ResponseEntity.ok(postResponse);
     }
 
-
     @PostMapping("/{postId}/like")
     public String likeOrUnlikePost(@PathVariable Long postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -58,5 +57,12 @@ public class PostController {
         return ResponseEntity.ok(topPosts);
     }
 
+    @GetMapping("/user-posts")
+    public ResponseEntity<List<PostResponse>> getPostsByUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
 
+        List<PostResponse> userPosts = postService.getPostsByUser(currentUsername);
+        return ResponseEntity.ok(userPosts);
+    }
 }

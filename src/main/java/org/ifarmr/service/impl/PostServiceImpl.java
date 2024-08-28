@@ -125,6 +125,23 @@ public class PostServiceImpl implements PostService {
         return savedCommentDto;
     }
 
+    @Override
+    public List<PostResponse> getPostsByUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        List<Post> userPosts = postRepository.findByUserId(user.getId());
+
+        return userPosts.stream()
+                .map(post -> PostResponse.builder()
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .photoUrl(post.getPhotoUrl())
+                        .dateCreated(post.getDateCreated())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
     public List<PopularPostResponse> getPopularPosts() {
         List<Post> posts = postRepository.findAll();
         // Sort posts based on the popularity score and return the top 3
