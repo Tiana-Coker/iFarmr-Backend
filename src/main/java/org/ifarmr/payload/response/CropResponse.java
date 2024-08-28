@@ -11,5 +11,8 @@ public class CropResponse {
 
     private String responseMessage;
     private CropInfo cropInfo;
+
+    public CropResponse(String message) {
+    }
 }
  

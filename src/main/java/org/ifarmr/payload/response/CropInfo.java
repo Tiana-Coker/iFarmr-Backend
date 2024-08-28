@@ -1,6 +1,8 @@
 package org.ifarmr.payload.response;
 
 import lombok.*;
+import org.ifarmr.entity.Crop;
+import org.ifarmr.enums.CropType;
 import org.ifarmr.enums.Status;
 
 import java.time.LocalDate;
@@ -12,18 +14,18 @@ import java.time.LocalDate;
 @Builder
 public class CropInfo {
     private String cropName;
-    private String cropType;
+    private CropType cropType;
     private LocalDate sowDate;
     private LocalDate harvestDate;
     private String numberOfSeedlings;
     private String costOfSeedlings;
     private String wateringFrequency;
-    private String fertilisingFrequency;
+    private String fertilizingFrequency;
     private String pestAndDiseases;
-    private String cost;
     private String photoUpload;
     private String quantity;
     private String location;
     private Status status;
     private String description;
+
 }

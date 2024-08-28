@@ -11,6 +11,7 @@ import org.ifarmr.payload.response.LiveStockInfo;
 import org.ifarmr.payload.response.LiveStockResponse;
 import org.ifarmr.repository.LiveStockRepository;
 import org.ifarmr.repository.UserRepository;
+import org.ifarmr.service.GlobalUploadService;
 import org.ifarmr.service.LiveStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,6 +26,9 @@ public class LiveStockServiceImpl implements LiveStockService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private GlobalUploadService globalUploadService;
+
     @Override
     public LiveStockResponse addLiveStock(LiveStockRequest liveStockRequest, String username) {
         try {
@@ -34,6 +38,12 @@ public class LiveStockServiceImpl implements LiveStockService {
             // Validate animal name
             if (liveStockRequest.getAnimalName() == null || liveStockRequest.getAnimalName().isEmpty()) {
                 throw new BadRequestException("Animal name cannot be null or empty");
+            }
+
+            // Handle photo upload
+            String uploadedPhotoUrl = null;
+            if (liveStockRequest.getPhotoUpload() != null && !liveStockRequest.getPhotoUpload().isEmpty()) {
+                uploadedPhotoUrl = globalUploadService.uploadImage(liveStockRequest.getPhotoUpload());
             }
 
             // Create a LiveStock entity from the LiveStockRequest
@@ -49,7 +59,7 @@ public class LiveStockServiceImpl implements LiveStockService {
                     .healthIssues(liveStockRequest.getHealthIssues())
                     .description(liveStockRequest.getDescription())
                     .status(liveStockRequest.getStatus())
-                    .photoUpload(liveStockRequest.getPhotoUpload())
+                    .photoUpload(uploadedPhotoUrl)
                     .user(user) // Set the current user to the livestock
                     .build();
 
@@ -65,9 +75,9 @@ public class LiveStockServiceImpl implements LiveStockService {
                             .breed(savedLiveStock.getBreed())
                             .quantity(savedLiveStock.getQuantity())
                             .age(savedLiveStock.getAge())
-                            .wateringFrequency(savedLiveStock.getWateringFrequency())
-                            .feedingSchedule(savedLiveStock.getFeedingSchedule())
-                            .vaccinationSchedule(savedLiveStock.getVaccinationSchedule())
+                            .wateringFrequency("Every " + savedLiveStock.getWateringFrequency() + " days")
+                            .feedingSchedule("Every " + savedLiveStock.getFeedingSchedule() + " days")
+                            .vaccinationSchedule("Every " + savedLiveStock.getVaccinationSchedule() + " days")
                             .healthIssues(savedLiveStock.getHealthIssues())
                             .description(savedLiveStock.getDescription())
                             .status(savedLiveStock.getStatus())

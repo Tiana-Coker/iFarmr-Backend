@@ -2,6 +2,7 @@ package org.ifarmr.payload.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.ifarmr.enums.AnimalType;
 import org.ifarmr.enums.Status;
 
 @Getter
@@ -11,7 +12,7 @@ import org.ifarmr.enums.Status;
 @Builder
 public class LiveStockInfo {
     private String animalName;
-    private String animalType;
+    private AnimalType animalType;
     private String breed;
     private String quantity;
     private String age;

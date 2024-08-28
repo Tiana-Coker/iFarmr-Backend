@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.ifarmr.enums.CropType;
 import org.ifarmr.enums.Status;
 
 import java.time.LocalDateTime;
@@ -20,7 +21,9 @@ public class Crop extends BaseClass {
 
     private String cropName;
 
-    private String cropType;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private CropType cropType;
 
     private LocalDateTime sowDate;
 
@@ -30,9 +33,9 @@ public class Crop extends BaseClass {
 
     private String costOfSeedlings;
 
-    private String wateringFrequency;
+    private Integer wateringFrequency;
 
-    private String fertilisingFrequency;
+    private Integer fertilizingFrequency;
 
     @Enumerated(EnumType.STRING)
     @NotNull

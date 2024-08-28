@@ -60,15 +60,15 @@ public class TaskServiceImpl implements TaskService {
 
 
         return TaskResponseDto.builder()
-                 .responseMessage("Task successfully created! ")
-                 .taskInfo(TaskInfo.builder()
-                         .title(task.getTitle())
-                         .location(task.getLocation())
-                         .category(task.getCategory().name())
-                         .dueDate(task.getDueDate())
-                         .description(task.getDescription())
-                         .build())
-                 .build();
+                .responseMessage("Task successfully created! ")
+                .taskInfo(TaskInfo.builder()
+                        .title(task.getTitle())
+                        .location(task.getLocation())
+                        .category(task.getCategory().name())
+                        .dueDate(task.getDueDate())
+                        .description(task.getDescription())
+                        .build())
+                .build();
 
     }
 

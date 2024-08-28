@@ -19,4 +19,10 @@ public class CloudinaryResponse<S> {
 
     private String fileUrl;
 
+
+    public CloudinaryResponse(Long userId, String name, String fileUrl) {
+        this.userId = userId;
+        this.name = name;
+        this.fileUrl = fileUrl;
+    }
 }

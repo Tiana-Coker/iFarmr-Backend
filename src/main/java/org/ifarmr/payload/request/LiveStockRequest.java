@@ -5,7 +5,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.ifarmr.enums.AnimalType;
 import org.ifarmr.enums.Status;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -19,7 +21,7 @@ public class LiveStockRequest {
     @NotNull
     private String animalName;
 
-    private String animalType;
+    private AnimalType animalType;
 
     private String breed;
 
@@ -27,11 +29,14 @@ public class LiveStockRequest {
 
     private String age;
 
-    private String wateringFrequency;
+    @NotNull(message = "This is required")
+    private MultipartFile photoUpload;
 
-    private String feedingSchedule;
+    private Integer wateringFrequency;
 
-    private String vaccinationSchedule;
+    private Integer feedingSchedule;
+
+    private Integer vaccinationSchedule;
 
     private String healthIssues;
 
@@ -40,5 +45,4 @@ public class LiveStockRequest {
     @NotNull
     private Status status;
 
-    private String photoUpload;
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.ifarmr.enums.AnimalType;
 import org.ifarmr.enums.Status;
 
 @Entity
@@ -18,7 +19,9 @@ public class LiveStock extends BaseClass {
 
     private String animalName;
 
-    private String animalType;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private  AnimalType animalType;
 
     private String breed;
 
@@ -26,11 +29,11 @@ public class LiveStock extends BaseClass {
 
     private String age;
 
-    private String wateringFrequency;
+    private Integer wateringFrequency;
 
-    private String feedingSchedule;
+    private Integer feedingSchedule;
 
-    private String vaccinationSchedule;
+    private Integer vaccinationSchedule;
 
     private String healthIssues;
 
@@ -48,6 +51,5 @@ public class LiveStock extends BaseClass {
     @JsonBackReference("livestock-user")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private User user;
-
 
 }

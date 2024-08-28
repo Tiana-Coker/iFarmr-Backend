@@ -4,6 +4,7 @@ import org.ifarmr.payload.request.LiveStockRequest;
 import org.ifarmr.payload.response.LiveStockResponse;
 import org.ifarmr.service.LiveStockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,8 +17,8 @@ public class LiveStockController {
     @Autowired
     private LiveStockService liveStockService;
 
-    @PostMapping("/add")
-    public ResponseEntity<LiveStockResponse> addLiveStock(@RequestBody LiveStockRequest liveStockRequest) {
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<LiveStockResponse> addLiveStock(@ModelAttribute LiveStockRequest liveStockRequest) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
