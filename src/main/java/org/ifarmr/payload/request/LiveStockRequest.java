@@ -43,4 +43,6 @@ public class LiveStockRequest {
     @NotNull
     private Status status;
 
+    private String location;
+
 }

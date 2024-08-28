@@ -6,6 +6,7 @@ import org.ifarmr.enums.CropType;
 import org.ifarmr.enums.Status;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,8 +16,8 @@ import java.time.LocalDate;
 public class CropInfo {
     private String cropName;
     private CropType cropType;
-    private LocalDate sowDate;
-    private LocalDate harvestDate;
+    private LocalDateTime sowDate;
+    private LocalDateTime harvestDate;
     private String numberOfSeedlings;
     private String costOfSeedlings;
     private String wateringFrequency;

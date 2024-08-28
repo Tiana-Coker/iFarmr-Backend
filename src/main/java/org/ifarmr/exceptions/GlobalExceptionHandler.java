@@ -102,4 +102,10 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse("An unexpected error occurred", "500");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<String> handleRoleNotFoundException(RoleNotFoundException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+
 }

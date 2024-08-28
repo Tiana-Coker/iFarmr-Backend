@@ -5,8 +5,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.ifarmr.enums.AnimalType;
 import org.ifarmr.enums.Status;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -45,6 +48,10 @@ public class LiveStock extends BaseClass {
 
     private String photoUpload;
 
+    @CreationTimestamp
+    private LocalDateTime dateAdded;
+
+    private String location;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

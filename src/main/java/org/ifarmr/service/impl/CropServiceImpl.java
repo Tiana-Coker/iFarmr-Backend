@@ -7,6 +7,8 @@ import org.ifarmr.exceptions.*;
 import org.ifarmr.payload.request.CropRequest;
 import org.ifarmr.payload.response.CropInfo;
 import org.ifarmr.payload.response.CropResponse;
+import org.ifarmr.payload.response.CropSummaryInfo;
+import org.ifarmr.payload.response.CropSummaryResponse;
 import org.ifarmr.repository.CropRepository;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.CropService;
@@ -15,6 +17,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -66,8 +70,8 @@ public class CropServiceImpl implements CropService {
                     .cropInfo(CropInfo.builder()
                             .cropName(savedCrop.getCropName())
                             .cropType(savedCrop.getCropType())
-                            .sowDate(LocalDate.from(savedCrop.getSowDate()))
-                            .harvestDate(LocalDate.from(savedCrop.getHarvestDate()))
+                            .sowDate(savedCrop.getSowDate())
+                            .harvestDate(savedCrop.getHarvestDate())
                             .numberOfSeedlings(savedCrop.getNumberOfSeedlings())
                             .costOfSeedlings(savedCrop.getCostOfSeedlings())
                             .wateringFrequency("Every " + savedCrop.getWateringFrequency() + " days")
@@ -88,6 +92,51 @@ public class CropServiceImpl implements CropService {
         } catch (Exception e) {
             throw new IFarmServiceException("An error occurred while adding the crop: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public List<CropResponse> getAllCropsByUser(String username) {
+        List<Crop> crops = cropRepository.findByUser_Username(username);
+
+        return crops.stream()
+                .map(crop -> CropResponse.builder()
+                        .responseMessage("Crop Retrieved Successfully!")
+                        .cropInfo(CropInfo.builder()
+                                .cropName(crop.getCropName())
+                                .cropType(crop.getCropType())
+                                .sowDate(crop.getSowDate())
+                                .harvestDate(crop.getHarvestDate())
+                                .numberOfSeedlings(crop.getNumberOfSeedlings())
+                                .costOfSeedlings(crop.getCostOfSeedlings())
+                                .wateringFrequency("Every " + crop.getWateringFrequency() + " days")
+                                .fertilizingFrequency("Every " + crop.getFertilizingFrequency() + " days")
+                                .pestAndDiseases(crop.getPestAndDiseases())
+                                .photoUpload(crop.getPhotoUpload())
+                                .quantity(crop.getQuantity())
+                                .location(crop.getLocation())
+                                .status(crop.getStatus())
+                                .description(crop.getDescription())
+                                .build())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CropSummaryResponse> getCropSummaryByUser(String username) {
+        List<Crop> crops = cropRepository.findByUser_Username(username);
+        return crops.stream()
+                .map(crop -> CropSummaryResponse.builder()
+                        .responseMessage("Crop Retrieved Successfully!")
+                        .cropSummaryInfo(CropSummaryInfo.builder()
+                                .cropName(crop.getCropName())
+                                .status(crop.getStatus())
+                                .quantity(crop.getQuantity())
+                                .sowDate(crop.getSowDate())
+                                .harvestDate(crop.getHarvestDate())
+                                .build())
+                        .build())
+                .collect(Collectors.toList());
+
     }
 }
 

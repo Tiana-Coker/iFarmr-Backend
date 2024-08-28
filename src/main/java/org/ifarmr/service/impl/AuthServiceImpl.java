@@ -86,7 +86,7 @@ public class AuthServiceImpl implements AuthService{
 
         Optional<Role> userRole = roleRepository.findByName("USER");
         if (userRole.isEmpty()) {
-            throw new RuntimeException("Default role USER not found in the database.");
+            throw new RoleNotFoundException("Default role USER not found in the database.");
         }
 
         Set<Role> roles = new HashSet<>();
@@ -109,7 +109,7 @@ public class AuthServiceImpl implements AuthService{
         ConfirmationTokenModel confirmationToken = new ConfirmationTokenModel(savedUser);
         confirmationTokenRepository.save(confirmationToken);
 
-        String confirmationUrl = EmailUtil.getVerificationUrl(confirmationToken.getToken());
+        String confirmationUrl = emailUtil.getVerificationUrl(confirmationToken.getToken());
 
         //Sending mail
 
