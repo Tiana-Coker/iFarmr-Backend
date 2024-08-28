@@ -1,21 +1,22 @@
-package org.ifarmr.entity;
+package org.ifarmr.payload.request;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.ifarmr.enums.Status;
 
-@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "livestock_tbl")
-public class LiveStock extends BaseClass {
+public class LiveStockRequest {
 
+    @NotNull(message = "Animal name is required")
+    @Size(min = 1, max = 30, message = "Animal name must be between 1 and 30 characters")
+    @NotNull
     private String animalName;
 
     private String animalType;
@@ -36,18 +37,8 @@ public class LiveStock extends BaseClass {
 
     private String description;
 
-    @Enumerated(EnumType.STRING)
     @NotNull
     private Status status;
 
     private String photoUpload;
-
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonBackReference("livestock-user")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private User user;
-
-
 }
