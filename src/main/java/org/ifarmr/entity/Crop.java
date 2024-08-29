@@ -2,11 +2,11 @@ package org.ifarmr.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.ifarmr.enums.CropType;
+import org.ifarmr.enums.Status;
 
 import java.time.LocalDateTime;
 
@@ -19,27 +19,37 @@ import java.time.LocalDateTime;
 @Table(name = "crop_tbl")
 public class Crop extends BaseClass {
 
-    private String name;
+    private String cropName;
 
-    private String cropType;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private CropType cropType;
 
     private LocalDateTime sowDate;
 
     private LocalDateTime harvestDate;
 
-    private String numberOfSeeds;
+    private String numberOfSeedlings;
 
-    private String costOfSeed;
+    private String costOfSeedlings;
 
-    private String wateringFrequency;
+    private Integer wateringFrequency;
 
-    private String fertilisingFrequency;
+    private Integer fertilizingFrequency;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Status status;
+
+    private String quantity;
+
+    private String location;
 
     private String pestAndDiseases;
 
-    private String cost;
-
     private String photoUpload;
+
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

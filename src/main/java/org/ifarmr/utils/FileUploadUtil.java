@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 @UtilityClass
 public class FileUploadUtil {
 
-    public static final long MAX_FILE_SIZE = 2 * 1024 * 1024; //About 2MB
+    public static final long MAX_FILE_SIZE = 5 * 1024 * 1024; //About 5MB
 
     //Acceptable image type
     public static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp|jpeg))$)";
@@ -23,7 +23,7 @@ public class FileUploadUtil {
     public static void assertAllowed(MultipartFile file, String pattern) {
         final long fileSize = file.getSize();
         if (fileSize > MAX_FILE_SIZE) {
-            throw new FunctionErrorException("Max file size is 2MB");
+            throw new FunctionErrorException("Max file size is 5MB");
         }
         final String fileName = file.getOriginalFilename();
         if (!isAllowedExtension(fileName, pattern)) {

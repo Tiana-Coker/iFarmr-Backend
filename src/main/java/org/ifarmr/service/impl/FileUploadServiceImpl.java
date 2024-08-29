@@ -1,5 +1,6 @@
 package org.ifarmr.service.impl;
 
+
 import lombok.RequiredArgsConstructor;
 import org.ifarmr.entity.User;
 import org.ifarmr.exceptions.NotFoundException;
@@ -37,6 +38,5 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         return new CloudinaryResponse<>(user.getId(), user.getEmail(), user.getFullName(),fileUrl);
     }
-
 
 }

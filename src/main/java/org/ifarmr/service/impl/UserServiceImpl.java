@@ -1,9 +1,12 @@
 package org.ifarmr.service.impl;
 
+import org.ifarmr.entity.Inventory;
 import org.ifarmr.entity.User;
+import org.ifarmr.exceptions.InventoryEmptyException;
 import org.ifarmr.exceptions.UserNotFoundException;
 import org.ifarmr.payload.request.UserDetailsDto;
 import org.ifarmr.payload.response.CloudinaryResponse;
+import org.ifarmr.repository.InventoryRepository;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.FileUploadService;
 import org.ifarmr.service.UserService;
@@ -11,16 +14,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final FileUploadService fileUploadService;
+    private final InventoryRepository inventoryRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -29,9 +35,10 @@ public class UserServiceImpl implements UserService {
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]+$");
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, FileUploadService fileUploadService) {
+    public UserServiceImpl(UserRepository userRepository, FileUploadService fileUploadService, InventoryRepository inventoryRepository) {
         this.userRepository = userRepository;
         this.fileUploadService = fileUploadService;
+        this.inventoryRepository = inventoryRepository;
     }
 
     @Override
@@ -79,6 +86,20 @@ public class UserServiceImpl implements UserService {
                 .gender(updatedUser.getGender())
                 .profilePictureUrl(updatedUser.getDisplayPhoto())
                 .build();
+    }
+    @Transactional
+    @Override
+    public List<Inventory> getInventoryForUser(User authenticatedUser) {
+        // Fetch inventory for the authenticated user
+        List<Inventory> inventoryList = inventoryRepository.findAll().stream()
+                .filter(inventory -> inventory.getUser().getId().equals(authenticatedUser.getId()))
+                .collect(Collectors.toList());
+
+        if (inventoryList.isEmpty()) {
+            throw new InventoryEmptyException("Inventory is empty");
+        }
+
+        return inventoryList;
     }
 
 }

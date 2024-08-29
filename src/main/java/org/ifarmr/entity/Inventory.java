@@ -3,11 +3,11 @@ package org.ifarmr.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+import org.ifarmr.enums.ItemType;
+
+import java.time.LocalDate;
 
 @Entity
 @Setter
@@ -20,13 +20,20 @@ public class Inventory extends BaseClass{
 
     private String name;
 
-    private String itemType;
+    @Enumerated(EnumType.STRING)
+    private ItemType itemType;
 
     private Integer quantity;
 
-    private Integer cost;
+    private Double cost;
 
     private String photoUpload;
+
+    private String location;
+
+    private LocalDate dateAcquired;
+
+    private String  currentState;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
