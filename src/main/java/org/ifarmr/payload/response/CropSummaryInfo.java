@@ -16,7 +16,7 @@ public class CropSummaryInfo {
     private String cropName;
     private Status status;
     private String quantity;
-    private LocalDateTime sowDate;
-    private LocalDateTime harvestDate;
+    private LocalDate sowDate;
+    private LocalDate harvestDate;
 
 }

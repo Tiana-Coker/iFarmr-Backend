@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 public class CropInfo {
     private String cropName;
     private CropType cropType;
-    private LocalDateTime sowDate;
-    private LocalDateTime harvestDate;
+    private LocalDate sowDate;
+    private LocalDate harvestDate;
     private String numberOfSeedlings;
     private String costOfSeedlings;
     private String wateringFrequency;
