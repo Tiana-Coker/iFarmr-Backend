@@ -138,7 +138,7 @@ public class LiveStockServiceImpl implements LiveStockService {
                                 .quantity(liveStock.getQuantity())
                                 .status(liveStock.getStatus())
                                 .location(liveStock.getLocation())
-                                .dateAdded(liveStock.getDateAdded())
+                                .createdDate(liveStock.getDateCreated())
                                 .build())
                         .build())
                 .collect(Collectors.toList());
