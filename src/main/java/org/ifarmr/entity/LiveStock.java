@@ -48,9 +48,6 @@ public class LiveStock extends BaseClass {
 
     private String photoUpload;
 
-    @CreationTimestamp
-    private LocalDateTime dateAdded;
-
     private String location;
 
     @ManyToOne

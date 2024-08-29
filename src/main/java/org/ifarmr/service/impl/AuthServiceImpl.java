@@ -86,7 +86,7 @@ public class AuthServiceImpl implements AuthService{
 
         Optional<Role> userRole = roleRepository.findByName("USER");
         if (userRole.isEmpty()) {
-            throw new RoleNotFoundException("Default role USER not found in the database.");
+            throw new NotFoundException("Default role USER not found in the database.");
         }
 
         Set<Role> roles = new HashSet<>();
