@@ -23,4 +23,5 @@ public class LiveStockInfo {
     private String description;
     private Status status;
     private String photoUpload;
+    private String location;
 }

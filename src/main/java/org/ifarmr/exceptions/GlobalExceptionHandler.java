@@ -102,4 +102,5 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse("An unexpected error occurred", "500");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }

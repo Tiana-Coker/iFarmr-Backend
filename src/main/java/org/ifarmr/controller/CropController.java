@@ -7,6 +7,7 @@ import org.ifarmr.exceptions.IFarmServiceException;
 import org.ifarmr.exceptions.NotFoundException;
 import org.ifarmr.payload.request.CropRequest;
 import org.ifarmr.payload.response.CropResponse;
+import org.ifarmr.payload.response.CropSummaryResponse;
 import org.ifarmr.service.CropService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/crops")
@@ -45,5 +48,25 @@ public class CropController {
         } catch (IFarmServiceException e) {
             return new ResponseEntity<>(new CropResponse(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<CropResponse>> getAllCropsForUser() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        List<CropResponse> crops = cropService.getAllCropsByUser(username);
+        return ResponseEntity.ok(crops);
+    }
+
+    @GetMapping("/user-summary")
+    public ResponseEntity<List<CropSummaryResponse>> getCropSummaryByUser() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        List<CropSummaryResponse> crops = cropService.getCropSummaryByUser(username);
+        return ResponseEntity.ok(crops);
     }
 }

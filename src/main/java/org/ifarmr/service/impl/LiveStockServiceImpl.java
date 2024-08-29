@@ -9,6 +9,8 @@ import org.ifarmr.exceptions.NotFoundException;
 import org.ifarmr.payload.request.LiveStockRequest;
 import org.ifarmr.payload.response.LiveStockInfo;
 import org.ifarmr.payload.response.LiveStockResponse;
+import org.ifarmr.payload.response.LivestockSummaryInfo;
+import org.ifarmr.payload.response.LivestockSummaryResponse;
 import org.ifarmr.repository.LiveStockRepository;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.GlobalUploadService;
@@ -16,6 +18,9 @@ import org.ifarmr.service.LiveStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LiveStockServiceImpl implements LiveStockService {
@@ -60,6 +65,7 @@ public class LiveStockServiceImpl implements LiveStockService {
                     .description(liveStockRequest.getDescription())
                     .status(liveStockRequest.getStatus())
                     .photoUpload(uploadedPhotoUrl)
+                    .location(liveStockRequest.getLocation())
                     .user(user) // Set the current user to the livestock
                     .build();
 
@@ -82,6 +88,7 @@ public class LiveStockServiceImpl implements LiveStockService {
                             .description(savedLiveStock.getDescription())
                             .status(savedLiveStock.getStatus())
                             .photoUpload(savedLiveStock.getPhotoUpload())
+                            .location(savedLiveStock.getLocation())
                             .build())
                     .build();
 
@@ -92,5 +99,49 @@ public class LiveStockServiceImpl implements LiveStockService {
         } catch (Exception e) {
             throw new IFarmServiceException("An error occurred while adding the livestock: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public List<LiveStockResponse> getAllLiveStockByUser(String username) {
+        List<LiveStock> liveStockList = liveStockRepository.findByUser_Username(username);
+
+        return liveStockList.stream()
+                .map(liveStock -> LiveStockResponse.builder()
+                        .responseMessage("Livestock Retrieved Successfully!")
+                        .liveStockInfo(LiveStockInfo.builder()
+                                .animalName(liveStock.getAnimalName())
+                                .animalType(liveStock.getAnimalType())
+                                .breed(liveStock.getBreed())
+                                .quantity(liveStock.getQuantity())
+                                .age(liveStock.getAge())
+                                .wateringFrequency("Every " + liveStock.getWateringFrequency() + " days")
+                                .feedingSchedule("Every " + liveStock.getFeedingSchedule() + " days")
+                                .vaccinationSchedule("Every " + liveStock.getVaccinationSchedule() + " days")
+                                .healthIssues(liveStock.getHealthIssues())
+                                .description(liveStock.getDescription())
+                                .status(liveStock.getStatus())
+                                .photoUpload(liveStock.getPhotoUpload())
+                                .location(liveStock.getLocation())
+                                .build())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LivestockSummaryResponse> getLivestockSummaryByUser(String username) {
+        List<LiveStock> liveStockList = liveStockRepository.findByUser_Username(username);
+        return liveStockList.stream()
+                .map(liveStock -> LivestockSummaryResponse.builder()
+                        .responseMessage("Livestock Retrieved Successfully!")
+                        .livestockSummaryInfo(LivestockSummaryInfo.builder()
+                                .animalName(liveStock.getAnimalName())
+                                .quantity(liveStock.getQuantity())
+                                .status(liveStock.getStatus())
+                                .location(liveStock.getLocation())
+                                .createdDate(liveStock.getDateCreated())
+                                .build())
+                        .build())
+                .collect(Collectors.toList());
+
     }
 }
