@@ -1,12 +1,13 @@
 package org.ifarmr.controller;
 
+
 import lombok.RequiredArgsConstructor;
-import org.ifarmr.entity.Post;
 import org.ifarmr.payload.request.CommentDto;
 import org.ifarmr.payload.request.PostRequest;
 import org.ifarmr.payload.response.PopularPostResponse;
 import org.ifarmr.payload.response.PostResponse;
 import org.ifarmr.service.PostService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +22,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostResponse> createPost(@ModelAttribute PostRequest postRequest) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
