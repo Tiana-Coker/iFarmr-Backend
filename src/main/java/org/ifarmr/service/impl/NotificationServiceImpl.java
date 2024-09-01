@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.ifarmr.entity.*;
 import org.ifarmr.enums.NotificationType;
 import org.ifarmr.exceptions.NotFoundException;
+import org.ifarmr.payload.request.NotificationRequest;
 import org.ifarmr.payload.request.RecentActivityDto;
 import org.ifarmr.repository.*;
 import org.ifarmr.service.NotificationService;
+import org.ifarmr.service.NotificationTokenService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -16,10 +19,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @RequiredArgsConstructor
 @Service
 public class NotificationServiceImpl implements NotificationService {
+
+
+    @Autowired
+    private NotificationTokenRepository tokenRepository;
+    @Autowired
+    private FCMService fcmService;
+    @Autowired
+    NotificationTokenService notificationTokenService;
 
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
@@ -31,19 +43,6 @@ public class NotificationServiceImpl implements NotificationService {
     private final InventoryRepository inventoryRepository;
     private final LiveStockRepository liveStockRepository;
     private final TicketRepository ticketRepository;
-
-    @Override
-    public void createNotification(Long userId, String content, NotificationType type) {
-        User user = findUserById(userId);
-
-        Notification notification = Notification.builder()
-                .content(content)
-                .type(type)
-                .user(user)
-                .build();
-
-        notificationRepository.save(notification);
-    }
 
     @Override
     public List<RecentActivityDto> getRecentActivities(String username) {
@@ -258,6 +257,43 @@ public class NotificationServiceImpl implements NotificationService {
             return timeUnits.get("minute") + " minute" + (timeUnits.get("minute") > 1 ? "s" : "") + " ago";
         } else {
             return timeUnits.get("second") + " second" + (timeUnits.get("second") > 1 ? "s" : "") + " ago";
+        }
+    }
+
+
+
+    // FIREBASE NOTIFICATION METHODS BELOW;
+
+    @Override
+    public void sendNotificationToAll(NotificationRequest request) throws ExecutionException, InterruptedException {
+        List<NotificationToken> tokens = tokenRepository.findAll();
+        for (NotificationToken token : tokens) {
+            request.setToken(token.getToken());
+            fcmService.sendMessageToToken(request);
+        }
+    }
+
+
+
+    @Override
+    public void sendNotificationToUser(Long userId, NotificationRequest request) throws ExecutionException, InterruptedException {
+        System.out.println("ADMIN ID FROM SERVICE METHOD" + userId);
+        // Retrieve tokens for the specific user using the service method
+        List<NotificationToken> tokens = notificationTokenService.getTokensByUserId(userId);
+
+//    NotificationToken token = tokens.get(0);
+//    System.out.println(" FIRST TOKEN " + tokens.get(0).toString());
+
+        // Check if tokens are found
+        if (tokens.isEmpty()) {
+            throw new RuntimeException("No tokens found for user with ID: " + userId);
+        }
+
+        // Send notification to each token
+        for (NotificationToken token : tokens) {
+            request.setToken(token.getToken());
+            fcmService.sendMessageToToken(request);
+//        System.out.println("notification sent from inside service method");
         }
     }
 }
