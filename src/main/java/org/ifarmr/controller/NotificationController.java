@@ -2,6 +2,7 @@ package org.ifarmr.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.ifarmr.entity.Notification;
+import org.ifarmr.payload.request.RecentActivityDto;
 import org.ifarmr.service.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,11 +21,11 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping("/recent-activities")
-    public ResponseEntity<List<Notification>> getRecentActivities() {
+    public ResponseEntity<List<RecentActivityDto>> getRecentActivities() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        List<Notification> activities = notificationService.getRecentActivities(username);
+        List<RecentActivityDto> activities = notificationService.getRecentActivities(username);
         return ResponseEntity.ok(activities);
     }
 

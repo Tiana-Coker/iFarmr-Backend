@@ -11,4 +11,6 @@ public interface CropRepository extends JpaRepository<Crop, Long> {
     Optional<Crop> findByCropName(String name);
 
     List<Crop> findByUser_Username(String username);
+
+    List<Crop> findByUserIdOrderBySowDateDesc(Long userId);
 }

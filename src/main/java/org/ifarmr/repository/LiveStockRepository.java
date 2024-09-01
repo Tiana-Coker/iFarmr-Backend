@@ -12,4 +12,7 @@ public interface LiveStockRepository extends JpaRepository<LiveStock, Long> {
     Optional<LiveStock> findByAnimalName(String name);
 
     List<LiveStock> findByUser_Username(String username);
+
+    List<LiveStock> findByUserIdOrderByDateCreatedDesc(Long userId);
+
 }
