@@ -29,12 +29,5 @@ public class NotificationController {
         return ResponseEntity.ok(activities);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Notification>> getAllNotifications() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
 
-        List<Notification> notifications = notificationService.getAllNotifications(username);
-        return ResponseEntity.ok(notifications);
-    }
 }

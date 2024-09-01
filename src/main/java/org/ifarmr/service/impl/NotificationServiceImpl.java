@@ -9,9 +9,13 @@ import org.ifarmr.repository.*;
 import org.ifarmr.service.NotificationService;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -62,11 +66,6 @@ public class NotificationServiceImpl implements NotificationService {
         return activities;
     }
 
-    @Override
-    public List<Notification> getAllNotifications(String username) {
-        User user = findUserByUsername(username);
-        return notificationRepository.findByUserIdOrderByDateCreatedDesc(user.getId());
-    }
 
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
@@ -82,13 +81,15 @@ public class NotificationServiceImpl implements NotificationService {
         List<RecentActivityDto> activities = new ArrayList<>();
         List<Post> posts = postRepository.findByUserIdOrderByDateCreatedDesc(user.getId());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+
         for (Post post : posts) {
             activities.add(RecentActivityDto.builder()
                     .icon("post-icon") // Replace with appropriate icon
                     .title("New Post")
                     .description(post.getTitle())
                     .timeAgo(calculateTimeAgo(post.getDateCreated()))
-                    .date(post.getDateCreated())
+                    .date(post.getDateCreated().format(formatter))
                     .build());
         }
 
@@ -99,13 +100,15 @@ public class NotificationServiceImpl implements NotificationService {
         List<RecentActivityDto> activities = new ArrayList<>();
         List<Comment> comments = commentRepository.findByUserIdOrderByDateCreatedDesc(user.getId());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+
         for (Comment comment : comments) {
             activities.add(RecentActivityDto.builder()
                     .icon("comment-icon") // Replace with appropriate icon
                     .title("New Comment")
                     .description(comment.getContent())
                     .timeAgo(calculateTimeAgo(comment.getDateCreated()))
-                    .date(comment.getDateCreated())
+                    .date(comment.getDateCreated().format(formatter))
                     .build());
         }
 
@@ -116,13 +119,15 @@ public class NotificationServiceImpl implements NotificationService {
         List<RecentActivityDto> activities = new ArrayList<>();
         List<Like> likes = likeRepository.findByUserIdOrderByDateCreatedDesc(user.getId());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+
         for (Like like : likes) {
             activities.add(RecentActivityDto.builder()
                     .icon("like-icon") // Replace with appropriate icon
                     .title("New Like")
                     .description("Liked a post/comment")
                     .timeAgo(calculateTimeAgo(like.getDateCreated()))
-                    .date(like.getDateCreated())
+                    .date(like.getDateCreated().format(formatter))
                     .build());
         }
 
@@ -133,13 +138,15 @@ public class NotificationServiceImpl implements NotificationService {
         List<RecentActivityDto> activities = new ArrayList<>();
         List<Task> tasks = taskRepository.findByUserIdOrderByDueDateDesc(user.getId());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+
         for (Task task : tasks) {
             activities.add(RecentActivityDto.builder()
                     .icon("task-icon") // Replace with appropriate icon
                     .title("New Task")
                     .description(task.getTitle())
                     .timeAgo(calculateTimeAgo(task.getDueDate().atStartOfDay()))
-                    .date(task.getDueDate().atStartOfDay())
+                    .date(task.getDueDate().atStartOfDay().format(formatter))
                     .build());
         }
 
@@ -150,13 +157,15 @@ public class NotificationServiceImpl implements NotificationService {
         List<RecentActivityDto> activities = new ArrayList<>();
         List<Crop> crops = cropRepository.findByUserIdOrderBySowDateDesc(user.getId());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+
         for (Crop crop : crops) {
             activities.add(RecentActivityDto.builder()
                     .icon("crop-icon") // Replace with appropriate icon
                     .title("New Crop")
                     .description(crop.getCropName())
                     .timeAgo(calculateTimeAgo(crop.getSowDate()))
-                    .date(crop.getSowDate())
+                    .date(crop.getSowDate().format(formatter))
                     .build());
         }
 
@@ -167,13 +176,15 @@ public class NotificationServiceImpl implements NotificationService {
         List<RecentActivityDto> activities = new ArrayList<>();
         List<Inventory> inventories = inventoryRepository.findByUserIdOrderByDateAcquiredDesc(user.getId());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+
         for (Inventory inventory : inventories) {
             activities.add(RecentActivityDto.builder()
                     .icon("inventory-icon") // Replace with appropriate icon
                     .title("New Inventory")
                     .description(inventory.getName())
                     .timeAgo(calculateTimeAgo(inventory.getDateAcquired().atStartOfDay()))
-                    .date(inventory.getDateAcquired().atStartOfDay())
+                    .date(inventory.getDateAcquired().atStartOfDay().format(formatter))
                     .build());
         }
 
@@ -184,13 +195,15 @@ public class NotificationServiceImpl implements NotificationService {
         List<RecentActivityDto> activities = new ArrayList<>();
         List<LiveStock> liveStocks = liveStockRepository.findByUserIdOrderByDateCreatedDesc(user.getId());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+
         for (LiveStock liveStock : liveStocks) {
             activities.add(RecentActivityDto.builder()
                     .icon("livestock-icon") // Replace with appropriate icon
                     .title("New Livestock")
                     .description(liveStock.getAnimalName())
                     .timeAgo(calculateTimeAgo(liveStock.getDateCreated()))
-                    .date(liveStock.getDateCreated())
+                    .date(liveStock.getDateCreated().format(formatter))
                     .build());
         }
 
@@ -201,21 +214,50 @@ public class NotificationServiceImpl implements NotificationService {
         List<RecentActivityDto> activities = new ArrayList<>();
         List<Ticket> tickets = ticketRepository.findByUserIdOrderByDateCreatedDesc(user.getId());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+
         for (Ticket ticket : tickets) {
             activities.add(RecentActivityDto.builder()
                     .icon("ticket-icon") // Replace with appropriate icon
                     .title("New Ticket")
                     .description(ticket.getTitle())
                     .timeAgo(calculateTimeAgo(ticket.getDateCreated()))
-                    .date(ticket.getDateCreated())
+                    .date(ticket.getDateCreated().format(formatter))
                     .build());
         }
 
         return activities;
     }
 
-    private LocalDateTime calculateTimeAgo(LocalDateTime dateTime) {
-        // Implement your timeAgo calculation logic here
-        return dateTime; // Placeholder
+    private String calculateTimeAgo(LocalDateTime dateTime) {
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(dateTime, now);
+
+        long seconds = duration.getSeconds();
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+
+        Map<String, Long> timeUnits = new HashMap<>();
+        timeUnits.put("year", days / 365);
+        timeUnits.put("month", (days % 365) / 30);
+        timeUnits.put("day", days % 30);
+        timeUnits.put("hour", hours % 24);
+        timeUnits.put("minute", minutes % 60);
+        timeUnits.put("second", seconds % 60);
+
+        if (timeUnits.get("year") > 0) {
+            return timeUnits.get("year") + " year" + (timeUnits.get("year") > 1 ? "s" : "") + " ago";
+        } else if (timeUnits.get("month") > 0) {
+            return timeUnits.get("month") + " month" + (timeUnits.get("month") > 1 ? "s" : "") + " ago";
+        } else if (timeUnits.get("day") > 0) {
+            return timeUnits.get("day") + " day" + (timeUnits.get("day") > 1 ? "s" : "") + " ago";
+        } else if (timeUnits.get("hour") > 0) {
+            return timeUnits.get("hour") + " hour" + (timeUnits.get("hour") > 1 ? "s" : "") + " ago";
+        } else if (timeUnits.get("minute") > 0) {
+            return timeUnits.get("minute") + " minute" + (timeUnits.get("minute") > 1 ? "s" : "") + " ago";
+        } else {
+            return timeUnits.get("second") + " second" + (timeUnits.get("second") > 1 ? "s" : "") + " ago";
+        }
     }
 }

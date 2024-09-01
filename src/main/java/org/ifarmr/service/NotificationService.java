@@ -12,5 +12,4 @@ public interface NotificationService {
 
     List<RecentActivityDto> getRecentActivities(String username);
 
-    List<Notification> getAllNotifications(String username);
 }
