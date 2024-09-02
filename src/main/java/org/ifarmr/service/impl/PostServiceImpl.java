@@ -22,10 +22,7 @@ import org.ifarmr.service.PostService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -183,7 +180,15 @@ public class PostServiceImpl implements PostService {
 
         private List<UserSummary> mapCommentsToUserSummary(List<Comment> comments) {
             if (comments == null) return List.of();
-            return comments.stream()
+
+            Map<Long, Comment> uniqueUsersMap = comments.stream()
+                    .collect(Collectors.toMap(
+                            comment -> comment.getUser().getId(), // Key: User ID
+                            comment -> comment, // Value: Comment object
+                            (existing, replacement) -> existing, // In case of duplicates, keep the first one
+                            LinkedHashMap::new // Maintain insertion order
+                    ));
+            return uniqueUsersMap.values().stream()
                     .sorted(Comparator.comparing(Comment::getDateCreated).reversed())
                     .limit(3)
                     .map(comment -> mapToUserSummary(comment.getUser()))
