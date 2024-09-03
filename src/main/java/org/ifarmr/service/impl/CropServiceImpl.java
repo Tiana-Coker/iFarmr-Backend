@@ -13,6 +13,7 @@ import org.ifarmr.repository.CropRepository;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.CropService;
 import org.ifarmr.service.GlobalUploadService;
+import org.ifarmr.utils.FileUploadUtil;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,7 @@ public class CropServiceImpl implements CropService {
             // Handle photo upload
             String uploadedPhotoUrl = null;
             if (cropRequest.getPhotoUpload() != null && !cropRequest.getPhotoUpload().isEmpty()) {
+                FileUploadUtil.assertAllowed(cropRequest.getPhotoUpload(), FileUploadUtil.IMAGE_PATTERN);
                 uploadedPhotoUrl = globalUploadService.uploadImage(cropRequest.getPhotoUpload());
             }
 
@@ -137,6 +139,13 @@ public class CropServiceImpl implements CropService {
                         .build())
                 .collect(Collectors.toList());
 
+    }
+    @Override
+    public int totalCrop(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("User with " + username +" not found"));
+
+        return cropRepository.countByUser(user);
     }
 }
 

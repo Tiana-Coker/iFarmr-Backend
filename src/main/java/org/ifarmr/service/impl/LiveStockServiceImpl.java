@@ -15,6 +15,7 @@ import org.ifarmr.repository.LiveStockRepository;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.GlobalUploadService;
 import org.ifarmr.service.LiveStockService;
+import org.ifarmr.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,7 @@ public class LiveStockServiceImpl implements LiveStockService {
             // Handle photo upload
             String uploadedPhotoUrl = null;
             if (liveStockRequest.getPhotoUpload() != null && !liveStockRequest.getPhotoUpload().isEmpty()) {
+                FileUploadUtil.assertAllowed(liveStockRequest.getPhotoUpload(), FileUploadUtil.IMAGE_PATTERN);
                 uploadedPhotoUrl = globalUploadService.uploadImage(liveStockRequest.getPhotoUpload());
             }
 
@@ -143,5 +145,13 @@ public class LiveStockServiceImpl implements LiveStockService {
                         .build())
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public int totalLiveStock(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("User with " + username +" not found"));
+
+        return liveStockRepository.countByUser(user);
     }
 }
