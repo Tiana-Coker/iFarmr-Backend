@@ -1,6 +1,7 @@
 package org.ifarmr.service.impl;
 
 import org.ifarmr.entity.User;
+import org.ifarmr.payload.response.AdminDashboardResponse;
 import org.ifarmr.payload.response.FarmerStatisticsResponse;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.AdminService;
@@ -58,5 +59,20 @@ public class AdminServiceImpl implements AdminService{
         long inactiveFarmers = totalFarmers - activeFarmers;
 
         return new FarmerStatisticsResponse(totalFarmers, activeFarmers, inactiveFarmers);
+    }
+
+    @Override
+    public AdminDashboardResponse getDashboardData() {
+        List<User> farmers = userRepository.findAll(); // Fetch all farmers
+
+        long totalFarmers = farmers.size();
+        long activeFarmers = farmers.stream().filter(User::isEnabled).count();
+        long inactiveFarmers = totalFarmers - activeFarmers;
+
+        // Example additional data (Assuming methods to fetch these data exist)
+        //long totalOrders = 100; // Placeholder value; replace with actual data retrieval
+        //long completedOrders = 75; // Placeholder value; replace with actual data retrieval
+
+        return new AdminDashboardResponse(totalFarmers, activeFarmers, inactiveFarmers);//totalOrders, completedOrders);
     }
 }
