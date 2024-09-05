@@ -69,10 +69,6 @@ public class AdminServiceImpl implements AdminService{
         long activeFarmers = farmers.stream().filter(User::isEnabled).count();
         long inactiveFarmers = totalFarmers - activeFarmers;
 
-        // Example additional data (Assuming methods to fetch these data exist)
-        //long totalOrders = 100; // Placeholder value; replace with actual data retrieval
-        //long completedOrders = 75; // Placeholder value; replace with actual data retrieval
-
-        return new AdminDashboardResponse(totalFarmers, activeFarmers, inactiveFarmers);//totalOrders, completedOrders);
+        return new AdminDashboardResponse(totalFarmers, activeFarmers, inactiveFarmers);
     }
 }
