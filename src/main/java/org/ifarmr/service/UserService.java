@@ -10,12 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
+//    UserDetailsDto editUserDetails(String username, UserDetailsDto userDetailsDto, MultipartFile file);
+
+
+
     UserDetailsDto editUserDetails(String username, UserDetailsDto userDetailsDto, MultipartFile file);
-
-
 
     @Transactional
     List<Inventory> getInventoryForUser(User authenticatedUser);
 
     void updateLastActive(String username);
+
+    UserDetailsDto getUserDetails(String username);
+
 }
