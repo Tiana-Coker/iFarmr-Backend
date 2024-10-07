@@ -1,5 +1,6 @@
 package org.ifarmr.controller;
 
+import com.sun.security.auth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.ifarmr.payload.request.InventoryRequest;
 import org.ifarmr.payload.response.InventoryResponse;
@@ -7,6 +8,7 @@ import org.ifarmr.payload.response.InventoriesResponse;
 import org.ifarmr.service.InventoryService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +34,17 @@ public class InventoryController {
 
     @GetMapping
     public ResponseEntity<InventoriesResponse> getAllInventories() {
-        InventoriesResponse response = inventoryService.getAllInventories();
+        // Retrieve the authenticated user's username from the security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();  // get username
+
+        // Pass the username to the service
+        InventoriesResponse response = inventoryService.getAllInventories(username);
         return ResponseEntity.ok(response);
     }
+
+
+
+
 
 }

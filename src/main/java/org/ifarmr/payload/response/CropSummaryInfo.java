@@ -12,10 +12,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class CropSummaryInfo {
-
+    private Long id;
     private String cropName;
     private String status;
     private String quantity;
+    private String location;
     private LocalDate sowDate;
     private LocalDate harvestDate;
 

@@ -3,6 +3,7 @@ package org.ifarmr.service;
 import org.ifarmr.payload.request.CropRequest;
 import org.ifarmr.payload.response.CropResponse;
 import org.ifarmr.payload.response.CropSummaryResponse;
+import org.ifarmr.payload.response.CropsResponse;
 
 import java.util.List;
 
@@ -15,5 +16,8 @@ public interface CropService {
     List<CropSummaryResponse> getCropSummaryByUser(String username);
 
     int totalCrop(String username);
+
+    // Method to get all crops for a user
+    CropsResponse getAllCrops(String username);
 }
  
