@@ -8,6 +8,7 @@ import org.ifarmr.payload.response.CommentResponseDto;
 import org.ifarmr.payload.response.PopularPostResponse;
 import org.ifarmr.payload.response.PostResponse;
 import org.ifarmr.service.PostService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -101,4 +102,13 @@ public class PostController {
         List<CommentResponseDto> replies = postService.getRepliesForComment(commentId);
         return ResponseEntity.ok(replies);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<Page<PostResponse>> getAllPosts(@RequestParam(defaultValue = "0") int page) {
+
+        Page<PostResponse> posts = postService.getAllPosts(page);
+
+        return ResponseEntity.ok(posts);
+    }
 }
+

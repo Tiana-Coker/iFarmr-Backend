@@ -6,6 +6,7 @@ import org.ifarmr.payload.request.PostRequest;
 import org.ifarmr.payload.response.CommentResponseDto;
 import org.ifarmr.payload.response.PopularPostResponse;
 import org.ifarmr.payload.response.PostResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -31,4 +32,6 @@ public interface PostService {
     CommentResponseDto replyToComment(String username, CommentDto commentDto);
 
     List <CommentResponseDto> getRepliesForComment(Long commentId);
+
+    Page<PostResponse> getAllPosts(int page);
 }
