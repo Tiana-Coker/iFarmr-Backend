@@ -22,6 +22,9 @@ import org.ifarmr.repository.PostRepository;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.NotificationService;
 import org.ifarmr.service.PostService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -193,7 +196,8 @@ public class PostServiceImpl implements PostService {
                         .dateCreated(post.getDateCreated())
                         .likeCount(likeRepository.countByPostId(post.getId())) // Set like count
                         .commentCount(commentRepository.countByPostId(post.getId())) // Set comment count
-                        .userName(user.getUsername()) // Include userName in the response
+                        .fullName(post.getUser().getFullName())
+                        //.userName(user.getUsername()) // Include userName in the response
                         .build())
                 .collect(Collectors.toList());
     }
@@ -301,6 +305,27 @@ public class PostServiceImpl implements PostService {
                         .build())
                 .collect(Collectors.toList() );
     }
+
+    @Override
+    public Page<PostResponse> getAllPosts(int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        return posts.map(post -> PostResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .photoUrl(post.getPhotoUrl())
+                .dateCreated(post.getDateCreated())
+                .likeCount(likeRepository.countByPostId(post.getId()))
+                .commentCount(commentRepository.countByPostId(post.getId()))
+                .fullName(post.getUser().getFullName())
+                .build()
+        );
+
+    }
+
 
     private String generateLikeNotificationTitle(Like like) {
         if (like.getPost() != null) {

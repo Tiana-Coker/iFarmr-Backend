@@ -1,0 +1,198 @@
+[
+  {
+    "tipTitle": "Soil Testing",
+    "tipDescription": "Test soil regularly to determine nutrient needs and adjust fertilizers."
+  },
+  {
+    "tipTitle": "Crop Rotation",
+    "tipDescription": "Rotate crops each season to maintain soil fertility and reduce pests."
+  },
+  {
+    "tipTitle": "Water Conservation",
+    "tipDescription": "Install drip irrigation to save water and increase efficiency."
+  },
+  {
+    "tipTitle": "Pest Control",
+    "tipDescription": "Use biological pest control methods to minimize chemical use."
+  },
+  {
+    "tipTitle": "Mulching",
+    "tipDescription": "Apply organic mulch to retain moisture and prevent weeds."
+  },
+  {
+    "tipTitle": "Seed Selection",
+    "tipDescription": "Choose high-quality, disease-resistant seeds for better yield."
+  },
+  {
+    "tipTitle": "Composting",
+    "tipDescription": "Use compost to improve soil structure and increase organic matter."
+  },
+  {
+    "tipTitle": "Fertilizer Management",
+    "tipDescription": "Apply fertilizers based on soil test results for balanced nutrition."
+  },
+  {
+    "tipTitle": "Disease Control",
+    "tipDescription": "Plant disease-resistant crop varieties to reduce chemical use."
+  },
+  {
+    "tipTitle": "Pruning",
+    "tipDescription": "Prune plants to improve air circulation and reduce disease."
+  },
+  {
+    "tipTitle": "Livestock Grazing",
+    "tipDescription": "Rotate grazing areas to prevent overgrazing and maintain pasture health."
+  },
+  {
+    "tipTitle": "Irrigation Scheduling",
+    "tipDescription": "Water crops early in the morning to reduce evaporation."
+  },
+  {
+    "tipTitle": "Organic Farming",
+    "tipDescription": "Incorporate organic methods to build healthy soil and sustainable practices."
+  },
+  {
+    "tipTitle": "Green Manure",
+    "tipDescription": "Grow green manure crops to add nutrients and improve soil health."
+  },
+  {
+    "tipTitle": "Frost Protection",
+    "tipDescription": "Use row covers to protect sensitive crops from frost."
+  },
+  {
+    "tipTitle": "Agroforestry",
+    "tipDescription": "Integrate trees into farming systems to enhance biodiversity."
+  },
+  {
+    "tipTitle": "Bee Pollination",
+    "tipDescription": "Introduce bee hives to increase pollination and boost crop yields."
+  },
+  {
+    "tipTitle": "Post-Harvest Handling",
+    "tipDescription": "Handle crops carefully after harvest to reduce bruising and spoilage."
+  },
+  {
+    "tipTitle": "Cover Crops",
+    "tipDescription": "Plant cover crops to protect soil and improve fertility during off-seasons."
+  },
+  {
+    "tipTitle": "Poultry Management",
+    "tipDescription": "Provide balanced nutrition and clean housing to improve poultry production."
+  },
+  {
+    "tipTitle": "Farm Record Keeping",
+    "tipDescription": "Maintain detailed farm records to track input use, expenses, and crop yield."
+  },
+  {
+    "tipTitle": "Herbicide Management",
+    "tipDescription": "Apply herbicides during calm, cool weather to avoid drift onto non-target crops."
+  },
+  {
+    "tipTitle": "Livestock Nutrition",
+    "tipDescription": "Provide a balanced diet for livestock to improve growth and reproduction."
+  },
+  {
+    "tipTitle": "Pesticide Safety",
+    "tipDescription": "Use protective gear when applying pesticides to ensure personal safety."
+  },
+  {
+    "tipTitle": "Market Research",
+    "tipDescription": "Conduct regular market research to determine which crops are in demand."
+  },
+  {
+    "tipTitle": "Soil Erosion Control",
+    "tipDescription": "Use contour farming and terraces to prevent soil erosion on slopes."
+  },
+  {
+    "tipTitle": "Precision Agriculture",
+    "tipDescription": "Use GPS and sensors for precise application of inputs like water and fertilizers."
+  },
+  {
+    "tipTitle": "Silage Production",
+    "tipDescription": "Produce high-quality silage to provide livestock with nutritious feed during dry periods."
+  },
+  {
+    "tipTitle": "Organic Pest Control",
+    "tipDescription": "Use natural remedies like neem oil to control pests without chemicals."
+  },
+  {
+    "tipTitle": "Water Harvesting",
+    "tipDescription": "Install water harvesting systems to collect and store rainwater for irrigation."
+  },
+  {
+    "tipTitle": "Integrated Pest Management",
+    "tipDescription": "Combine biological, mechanical, and chemical methods to manage pests sustainably."
+  },
+  {
+    "tipTitle": "Livestock Vaccination",
+    "tipDescription": "Vaccinate livestock on schedule to prevent disease outbreaks."
+  },
+  {
+    "tipTitle": "Weather Monitoring",
+    "tipDescription": "Monitor weather patterns to plan planting and harvesting activities."
+  },
+  {
+    "tipTitle": "Agrochemical Safety",
+    "tipDescription": "Store agrochemicals properly and use them according to recommended guidelines."
+  },
+  {
+    "tipTitle": "Solar Energy for Farms",
+    "tipDescription": "Invest in solar energy to power irrigation systems and reduce electricity costs."
+  },
+  {
+    "tipTitle": "Disease-Resistant Crops",
+    "tipDescription": "Plant varieties bred to resist common diseases in your region."
+  },
+  {
+    "tipTitle": "Sustainable Irrigation",
+    "tipDescription": "Utilize rain-fed systems and monitor soil moisture to optimize water use."
+  },
+  {
+    "tipTitle": "Seedling Care",
+    "tipDescription": "Provide sufficient light, water, and nutrients to seedlings for healthy growth."
+  },
+  {
+    "tipTitle": "Wildlife Management",
+    "tipDescription": "Create buffer zones to protect wildlife habitats near farm boundaries."
+  },
+  {
+    "tipTitle": "Farm Mechanization",
+    "tipDescription": "Use modern machinery to improve efficiency and reduce labor costs."
+  },
+  {
+    "tipTitle": "Organic Mulching",
+    "tipDescription": "Use organic mulch like straw to conserve soil moisture and improve soil fertility."
+  },
+  {
+    "tipTitle": "Carbon Sequestration",
+    "tipDescription": "Incorporate trees and plants that capture carbon to mitigate climate change."
+  },
+  {
+    "tipTitle": "Climate-Smart Agriculture",
+    "tipDescription": "Adopt practices that make farms more resilient to climate change impacts."
+  },
+  {
+    "tipTitle": "Plant Breeding",
+    "tipDescription": "Invest in breeding crops that thrive in your specific climate and soil type."
+  },
+  {
+    "tipTitle": "Farm Diversification",
+    "tipDescription": "Diversify crops and livestock to spread risks and improve farm income."
+  },
+  {
+    "tipTitle": "Soil Fertility",
+    "tipDescription": "Add organic amendments like manure to improve soil structure and fertility."
+  },
+  {
+    "tipTitle": "Agroforestry",
+    "tipDescription": "Mix trees and crops in your farming system to improve biodiversity and soil health."
+  },
+  {
+    "tipTitle": "Irrigation Efficiency",
+    "tipDescription": "Regularly check and maintain irrigation systems for maximum efficiency."
+  },
+  {
+    "tipTitle": "Drought-Resistant Crops",
+    "tipDescription": "Plant drought-resistant crops to cope with water scarcity."
+  }
+]
