@@ -8,6 +8,7 @@ import org.ifarmr.exceptions.NotFoundException;
 import org.ifarmr.payload.request.CropRequest;
 import org.ifarmr.payload.response.CropResponse;
 import org.ifarmr.payload.response.CropSummaryResponse;
+import org.ifarmr.payload.response.CropsResponse;
 import org.ifarmr.service.CropService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -75,5 +76,17 @@ public class CropController {
     public ResponseEntity<Integer> getTotalCrops() {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         return ResponseEntity.ok(cropService.totalCrop(username));
+    }
+
+    @GetMapping
+    public ResponseEntity<CropsResponse> getAllCrops() {
+        // Retrieve the authenticated user's username
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Fetch all crops for the user
+        CropsResponse response = cropService.getAllCrops(username);
+
+        return ResponseEntity.ok(response);
     }
 }

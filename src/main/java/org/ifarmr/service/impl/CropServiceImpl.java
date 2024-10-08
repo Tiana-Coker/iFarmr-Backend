@@ -6,10 +6,7 @@ import org.ifarmr.entity.User;
 import org.ifarmr.exceptions.*;
 import org.ifarmr.payload.request.CropRequest;
 import org.ifarmr.payload.request.NotificationRequest;
-import org.ifarmr.payload.response.CropInfo;
-import org.ifarmr.payload.response.CropResponse;
-import org.ifarmr.payload.response.CropSummaryInfo;
-import org.ifarmr.payload.response.CropSummaryResponse;
+import org.ifarmr.payload.response.*;
 import org.ifarmr.repository.CropRepository;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.CropService;
@@ -158,6 +155,44 @@ public class CropServiceImpl implements CropService {
                 .orElseThrow(() -> new NotFoundException("User with " + username +" not found"));
 
         return cropRepository.countByUser(user);
+    }
+
+    @Override
+    public CropsResponse getAllCrops(String username) {
+        // Get user by username
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        Long userId = user.getId();
+
+        // Fetch all crops for the user
+        List<Crop> crops = cropRepository.findByUserId(userId);
+
+        // Calculate total crops, mature crops, and flowering crops
+        Long totalCrops = cropRepository.countTotalCropsByUserId(userId);
+        Long totalMatureCrops = cropRepository.countTotalMatureCropsByUserId(userId);
+        Long totalFloweringCrops = cropRepository.countTotalFloweringCropsByUserId(userId);
+
+        // Map the crops to the response DTO
+        List<CropSummaryInfo> cropSummaryInfos = crops.stream()
+                .map(crop -> CropSummaryInfo.builder()
+                        .id(crop.getId())
+                        .cropName(crop.getCropName())
+                        .status(crop.getStatus())
+                        .quantity(crop.getNumberOfSeedlings())
+                        .location(crop.getLocation())
+                        .sowDate(crop.getSowDate())
+                        .harvestDate(crop.getHarvestDate())
+                        .build())
+                .collect(Collectors.toList());
+
+        // Build the response object
+        return CropsResponse.builder()
+                .totalCrops(totalCrops)
+                .totalMatureCrops(totalMatureCrops)
+                .totalFloweringCrops(totalFloweringCrops)
+                .crops(cropSummaryInfos)
+                .build();
     }
 }
 

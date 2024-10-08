@@ -10,5 +10,5 @@ public interface InventoryService {
 
     int totalInventory(String username);
 
-    InventoriesResponse getAllInventories();
+    InventoriesResponse getAllInventories(String username);
 }

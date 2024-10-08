@@ -17,6 +17,7 @@ import org.ifarmr.repository.InventoryRepository;
 import org.ifarmr.repository.UserRepository;
 import org.ifarmr.service.InventoryService;
 import org.ifarmr.service.NotificationService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -105,11 +106,19 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public InventoriesResponse getAllInventories() {
-        List<Inventory> inventories = inventoryRepository.findAll();
-        Long totalInventory = inventoryRepository.findTotalInventory();
-        Long totalInventoryValue = inventoryRepository.findTotalInventoryValue();
+    public InventoriesResponse getAllInventories(String username) {
+        // Fetch user by username
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+        Long userId = user.getId();
+
+        // Fetch inventories for the user
+        List<Inventory> inventories = inventoryRepository.findByUserId(userId);
+        Long totalInventory = inventoryRepository.findTotalInventoryByUserId(userId);
+        Long totalInventoryValue = inventoryRepository.findTotalInventoryValueByUserId(userId);
+
+        // Map the inventories to the response DTOs
         List<InventoryResponse> inventoryResponses = inventories.stream()
                 .map(inventory -> InventoryResponse.builder()
                         .id(inventory.getId())
@@ -124,10 +133,12 @@ public class InventoryServiceImpl implements InventoryService {
                         .build())
                 .collect(Collectors.toList());
 
+        // Build the response
         return InventoriesResponse.builder()
                 .totalInventory(totalInventory)
                 .totalInventoryValue(totalInventoryValue)
                 .inventories(inventoryResponses)
                 .build();
     }
+
 }
