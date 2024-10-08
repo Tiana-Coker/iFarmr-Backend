@@ -52,6 +52,8 @@ public class User implements UserDetails {
 
     private LocalDateTime lastActive;
 
+    private String bio;
+
     private String displayPhoto;
 
     private String businessName;

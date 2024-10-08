@@ -1,5 +1,6 @@
 package org.ifarmr.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ifarmr.entity.Inventory;
 import org.ifarmr.entity.User;
@@ -41,25 +42,35 @@ public class UserController {
 
         return ResponseEntity.ok(fileUploadService.uploadProfilePicture(username, file));
     }
-
-    @PutMapping(value="/edit-user-details",consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
+    @PutMapping(value = "/edit-user-details", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserDetailsDto> editUserDetails(
-            @RequestParam(value = "file", required = false) MultipartFile file,
-            @RequestParam(value = "fullName", required = false) String fullName,
-            @RequestParam(value = "username", required = false) String username,
-            @RequestParam(value = "gender", required = false) Gender gender) {
-
+           @Valid @RequestParam(value = "file", required = false) MultipartFile file,
+           @Valid  @RequestParam(value = "fullName", required = false) String fullName,
+           @Valid @RequestParam(value = "username", required = false) String username,
+           @Valid @RequestParam(value = "gender", required = false) Gender gender,
+           @Valid  @RequestParam(value = "password", required = false) String password, // Use 'password' instead of 'newPassword'
+           @Valid   @RequestParam(value = "bio", required = false) String bio
+    ) {
+        // Get the currently authenticated user's username
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
 
+        // Create the UserDetailsDto from the request parameters, including the password
         UserDetailsDto userDetailsDto = UserDetailsDto.builder()
                 .fullName(fullName)
                 .username(username)
                 .gender(gender)
+                .bio(bio)
+                .password(password) // Set the password
                 .build();
 
-        return ResponseEntity.ok(userService.editUserDetails(currentUsername, userDetailsDto, file));
+        // Call the service to update user details
+        UserDetailsDto updatedUserDetails = userService.editUserDetails(currentUsername, userDetailsDto, file);
+
+        return ResponseEntity.ok(updatedUserDetails);
     }
+
+
 
     @GetMapping("/inventory")
     public ResponseEntity<?> getAllInventoryByUser(@AuthenticationPrincipal User authenticatedUser) {
@@ -74,6 +85,15 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
+    }
+    @GetMapping("/get-user-details")
+    public ResponseEntity<UserDetailsDto> getUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+
+        UserDetailsDto userDetailsDto = userService.getUserDetails(currentUsername);
+
+        return ResponseEntity.ok(userDetailsDto);
     }
 
 }

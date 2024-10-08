@@ -20,4 +20,11 @@ public class UserDetailsDto {
     private Gender gender;
 
     private String profilePictureUrl;
+
+    private String bio;
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]+$", message = "Password must contain at least one alphabet and one number, and only alphabets and numbers are allowed")
+    private String password;
+
+    private  String email;
+
 }

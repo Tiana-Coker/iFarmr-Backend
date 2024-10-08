@@ -13,6 +13,7 @@ import org.ifarmr.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final FileUploadService fileUploadService;
     private final InventoryRepository inventoryRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -68,16 +72,33 @@ public class UserServiceImpl implements UserService {
             user.setUsername(userDetailsDto.getUsername());
         }
 
+        // Set bio
+        if (userDetailsDto.getBio() != null && !userDetailsDto.getBio().trim().isEmpty()) {
+            user.setBio(userDetailsDto.getBio());
+        }
+
+        // Validate and set new password if provided
+        if (userDetailsDto.getPassword() != null && !userDetailsDto.getPassword().trim().isEmpty()) {
+            if (!isValidPassword(userDetailsDto.getPassword())) {
+                throw new IllegalArgumentException("Password must be at least 8 characters and contain a mix of letters and numbers.");
+            }
+            String hashedPassword = passwordEncoder.encode(userDetailsDto.getPassword());
+            user.setPassword(hashedPassword);
+        }
+
+        // Set gender
         if (userDetailsDto.getGender() != null) {
             user.setGender(userDetailsDto.getGender());
         }
 
-        // Upload the profile picture and get the URL
-        CloudinaryResponse response = fileUploadService.uploadProfilePicture(username, file);
-        String profilePictureUrl = response.getFileUrl();
+        // Upload the profile picture and get the URL if file is not null
+        if (file != null && !file.isEmpty()) {
+            CloudinaryResponse response = fileUploadService.uploadProfilePicture(username, file);
+            String profilePictureUrl = response.getFileUrl();
 
-        if (profilePictureUrl != null && !profilePictureUrl.trim().isEmpty()) {
-            user.setDisplayPhoto(profilePictureUrl);
+            if (profilePictureUrl != null && !profilePictureUrl.trim().isEmpty()) {
+                user.setDisplayPhoto(profilePictureUrl);
+            }
         }
 
         User updatedUser = userRepository.save(user);
@@ -87,7 +108,13 @@ public class UserServiceImpl implements UserService {
                 .username(updatedUser.getUsername())
                 .gender(updatedUser.getGender())
                 .profilePictureUrl(updatedUser.getDisplayPhoto())
+                .bio(updatedUser.getBio())
                 .build();
+    }
+
+    // Example validation for password (8 characters minimum, must contain letters and numbers)
+    private boolean isValidPassword(String password) {
+        return password.length() >= 8 && password.matches("^(?=.*[a-zA-Z])(?=.*\\d).+$");
     }
     @Transactional
     @Override
@@ -119,6 +146,20 @@ public class UserServiceImpl implements UserService {
                 userRepository.save(user);
             }
         }
+    }
+    @Override
+    public UserDetailsDto getUserDetails(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User does not exist!"));
+
+        return UserDetailsDto.builder()
+                .fullName(user.getFullName())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .bio(user.getBio())
+                .profilePictureUrl(user.getDisplayPhoto())
+                .gender(user.getGender())
+                .build();
     }
 
 }
