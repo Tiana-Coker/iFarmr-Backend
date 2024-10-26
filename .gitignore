@@ -34,3 +34,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# Ignore sensitive JSON files
+src/main/resources/ifarm-17b22-99913453156a.json
+src/main/resources/firebase.json
+src/main/resources/ifarmr-firebase.json
